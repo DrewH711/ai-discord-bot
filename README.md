@@ -1,6 +1,5 @@
-# group-project-idk
-We should do something cool together but I don't really know what... maybe openAI? I did get codex access
+# AI Discord Bot
+OpenAI is too cool not to do a project with you on it so we should both work on the AI bot I made. Since I have codex we'll use my openAI account
 
-Maddox when you see this please add some kind of idea for a project...
-I don't know what to do but I just learned the basics of github and I feel like I need to do something
- 
+# For anyone seeing this
+We're very much open to pull requests and suggestions, as this is a fun learning project. If you have an idea, let us know!
