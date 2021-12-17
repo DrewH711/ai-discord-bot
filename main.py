@@ -6,7 +6,7 @@ import os
 from os import getenv
 from dotenv import load_dotenv
 
-load_dotenv("C:/Users/holla/Documents/aibot/ai-discord-bot-1/keys.env")
+load_dotenv("C:/Users/holla/Documents/aibot/keys.env")
 BOTSTATUS="under construction"
 
 bot = commands.Bot(command_prefix='ai.')
@@ -55,11 +55,11 @@ async def explaincode(ctx, language, *, code):
     response=openai.Completion.create(
     engine="davinci-codex",
     prompt=f"explain the following {language} code: \n{code}",
-    max_tokens=1000,
+    max_tokens=500,
     temperature=0,
     )
     print(response)
-    await ctx.send(f"```{language}\n{response.choices[0].text}```")
+    await ctx.send(f'```{language}\n{response.choices[0].text}```')
 
 bot.run(os.getenv('DISCORD_TOKEN'))
 
