@@ -51,15 +51,18 @@ async def request(ctx, engine):
 @bot.command()
 async def explaincode(ctx, language, *, code):
     openai.api_key = os.getenv('OPENAI_KEY')
-
+    code=code.replace('```','')
+    code=code.replace('`','')
     response=openai.Completion.create(
     engine="davinci-codex",
     prompt=f"explain the following {language} code: \n{code}",
     max_tokens=500,
     temperature=0,
+    top_p=1,
+    stop=["# **Question:**","# Question 2"]
     )
     print(response)
-    await ctx.send(f'```{language}\n{response.choices[0].text}```')
+    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
 bot.run(os.getenv('DISCORD_TOKEN'))
 
