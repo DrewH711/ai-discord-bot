@@ -59,7 +59,23 @@ async def explaincode(ctx, language, *, code):
     max_tokens=500,
     temperature=0,
     top_p=1,
-    stop=["# **Question:**","# Question 2"]
+    stop=["# **Question:**","# Question 2","# **Question**:"]
+    )
+    print(response)
+    if(language!="python"):
+        response.choices[0].text=response.choices[0].text.replace('#','//')
+    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+
+@bot.command()
+async def writecode(ctx, language, *, prompt):
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response=openai.Completion.create(
+    engine="davinci-codex",
+    prompt=f"write the following {language} code: \n{prompt}:\n",
+    max_tokens=500,
+    temperature=0,
+    top_p=1,
+    stop=["#","//"] #ai tends to create comments and then add parts to the code that the user did not ask for, this stops it
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
