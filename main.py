@@ -29,6 +29,11 @@ async def help(ctx):
     embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
     embed.add_field(name='ai.help', value='Shows this message', inline=False)
     embed.add_field(name='ai.status', value='Shows the status of the AI', inline=False)
+    embed.add_field(name='ai.ping', value='Shows the latency of the bot', inline=False)
+    embed.add_field(name='ai.request', value='Requests a response from the API', inline=False)
+    embed.add_field(name='ai.explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='ai.writecode [language] [description]', value='Writes a code snippet--smom elanauges work better than others', inline=False)
+    embed.add_field(name='ai.translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
     await ctx.send(embed=embed)
 
 @bot.command()
@@ -59,7 +64,9 @@ async def explaincode(ctx, language, *, code):
     max_tokens=500,
     temperature=0,
     top_p=1,
-    stop=["# **Question:**","# Question 2","# **Question**:"]
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["\n\n\n"]
     )
     print(response)
     if(language!="python"):
@@ -75,10 +82,32 @@ async def writecode(ctx, language, *, prompt):
     max_tokens=500,
     temperature=0,
     top_p=1,
-    stop=["#","//"] #ai tends to create comments and then add parts to the code that the user did not ask for, this stops it
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["\n\n\n"]
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+
+@bot.command()
+async def translatecode(ctx, language1, language2, *, code):
+    openai.api_key = os.getenv("OPENAI_KEY")
+    code=code.replace('```','')
+    code=code.replace('`','')    
+    response = openai.Completion.create(
+    engine="davinci-codex",
+    prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
+    temperature=0,
+    max_tokens=500,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=['"""','\n\n\n']
+    )
+    print(response)
+    response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
+    await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+
 
 bot.run(os.getenv('DISCORD_TOKEN'))
 
