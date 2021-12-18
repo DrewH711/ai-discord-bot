@@ -20,6 +20,12 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Game(name='in development'), status=discord.Status.do_not_disturb)
 
+@bot.event
+async def on_command_error(ctx,error):
+    if isinstance(error, error.OpenAIError):
+        await ctx.send("something went wrong with the api... try again later")
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.send(f"{ctx.author.mention}, that command does not exist")
 @bot.command()
 async def ping(ctx):
     await ctx.send(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
@@ -32,7 +38,7 @@ async def help(ctx):
     embed.add_field(name='ai.ping', value='Shows the latency of the bot', inline=False)
     embed.add_field(name='ai.request', value='Requests a response from the API', inline=False)
     embed.add_field(name='ai.explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
-    embed.add_field(name='ai.writecode [language] [description]', value='Writes a code snippet--smom elanauges work better than others', inline=False)
+    embed.add_field(name='ai.writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
     embed.add_field(name='ai.translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
     await ctx.send(embed=embed)
 
