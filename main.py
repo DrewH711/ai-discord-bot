@@ -5,11 +5,13 @@ from discord.ext import commands
 import os
 from os import getenv
 from dotenv import load_dotenv
+from discord_slash import SlashCommand, SlashContext
 
-load_dotenv("C:/Users/holla/Documents/aibot/keys.env")
+load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 BOTSTATUS="under construction"
 
 bot = commands.Bot(command_prefix='ai.')
+slash=SlashCommand(bot, sync_commands=True)
 bot.remove_command('help')
 
 @bot.event
@@ -22,33 +24,32 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx,error):
-    if isinstance(error, error.OpenAIError):
-        await ctx.send("something went wrong with the api... try again later")
-    elif isinstance(error, commands.CommandNotFound):
+    if isinstance(error, commands.CommandNotFound):
         await ctx.send(f"{ctx.author.mention}, that command does not exist")
-@bot.command()
-async def ping(ctx):
+
+@slash.slash(name='ping',description='latency test')
+async def ping(ctx: SlashContext):
     await ctx.send(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
 
-@bot.command()
-async def help(ctx):
+@slash.slash(name='help',description='shows help menu')
+async def help(ctx: SlashContext):
     embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
     embed.add_field(name='ai.help', value='Shows this message', inline=False)
-    embed.add_field(name='ai.status', value='Shows the status of the AI', inline=False)
+    embed.add_field(name='ai.status', value='Shows the status of the bot', inline=False)
     embed.add_field(name='ai.ping', value='Shows the latency of the bot', inline=False)
-    embed.add_field(name='ai.request', value='Requests a response from the API', inline=False)
+    embed.add_field(name='ai.request [engine name]', value='Requests a response from the API', inline=False)
     embed.add_field(name='ai.explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
     embed.add_field(name='ai.writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
     embed.add_field(name='ai.translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
-async def status(ctx):
+@slash.slash(name='status',description='shows the status of the bot')
+async def status(ctx: SlashContext):
     embed = discord.Embed(title='Status', description=f"Currently I am {BOTSTATUS}", color=0xffa500)
     await ctx.send(embed=embed)
 
-@bot.command()
-async def request(ctx, engine):
+@slash.slash(name='request',description='requests a response from the API')
+async def request(ctx: SlashContext, engine):
     openai.api_key = os.getenv('OPENAI_KEY')
 
     x = openai.Engine.retrieve(f"{engine}")
@@ -59,8 +60,8 @@ async def request(ctx, engine):
     except error.APIError:
         await ctx.send(f"{engine} is not a valid engine")
 
-@bot.command()
-async def explaincode(ctx, language, *, code):
+@slash.slash(name='explaincode',description='explains a code snippet--some languages work better than others')
+async def explaincode(ctx: SlashContext, language, *, code):
     openai.api_key = os.getenv('OPENAI_KEY')
     code=code.replace('```','')
     code=code.replace('`','')
@@ -79,7 +80,7 @@ async def explaincode(ctx, language, *, code):
         response.choices[0].text=response.choices[0].text.replace('#','//')
     await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
-@bot.command()
+@slash.slash(name='writecode',description='writes a code snippet--some languages work better than others')
 async def writecode(ctx, language, *, prompt):
     openai.api_key = os.getenv('OPENAI_KEY')
     response=openai.Completion.create(
@@ -95,7 +96,7 @@ async def writecode(ctx, language, *, prompt):
     print(response)
     await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
-@bot.command()
+@slash.slash(name='translatecode',description='translates a code snippet--some languages work better than others')
 async def translatecode(ctx, language1, language2, *, code):
     openai.api_key = os.getenv("OPENAI_KEY")
     code=code.replace('```','')
