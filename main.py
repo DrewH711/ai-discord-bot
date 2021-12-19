@@ -25,11 +25,11 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx,error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send(f"{ctx.author.mention}, that command does not exist")
+        await ctx.reply(f"{ctx.author.mention}, that command does not exist")
 
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
-    await ctx.send(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
+    await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
 
 @slash.slash(name='help',description='shows help menu')
 async def help(ctx: SlashContext):
@@ -56,9 +56,9 @@ async def request(ctx: SlashContext, engine):
     #if anyone knows how to actually make this handle the exception properly, please let me know
     #I've tried all kinds of variations of "openai.error.APIError" but it still doesn't work 
     try:
-        await ctx.send(f"{x.id} is available: {x.ready}")
+        await ctx.reply(f"{x.id} is available: {x.ready}")
     except error.APIError:
-        await ctx.send(f"{engine} is not a valid engine")
+        await ctx.reply(f"{engine} is not a valid engine")
 
 @slash.slash(name='explaincode',description='explains a code snippet--some languages work better than others')
 async def explaincode(ctx: SlashContext, language, *, code):
@@ -78,10 +78,10 @@ async def explaincode(ctx: SlashContext, language, *, code):
     print(response)
     if(language!="python"):
         response.choices[0].text=response.choices[0].text.replace('#','//')
-    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
 @slash.slash(name='writecode',description='writes a code snippet--some languages work better than others')
-async def writecode(ctx, language, *, prompt):
+async def writecode(ctx: SlashContext, language, *, prompt):
     openai.api_key = os.getenv('OPENAI_KEY')
     response=openai.Completion.create(
     engine="davinci-codex",
@@ -94,10 +94,10 @@ async def writecode(ctx, language, *, prompt):
     stop=["\n\n\n"]
     )
     print(response)
-    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
 @slash.slash(name='translatecode',description='translates a code snippet--some languages work better than others')
-async def translatecode(ctx, language1, language2, *, code):
+async def translatecode(ctx: SlashContext, language1, language2, *, code):
     openai.api_key = os.getenv("OPENAI_KEY")
     code=code.replace('```','')
     code=code.replace('`','')    
@@ -113,7 +113,24 @@ async def translatecode(ctx, language1, language2, *, code):
     )
     print(response)
     response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
-    await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+    await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+
+@slash.slash(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
+async def ask(ctx: SlashContext, *, question):
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response = openai.Completion.create(
+    engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+    prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
+    max_tokens=500,
+    temperature=0.8,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["question:"]
+    )
+    print(response)
+    response=response.choices[0].text.replace('\n','')
+    await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 
 
 bot.run(os.getenv('DISCORD_TOKEN'))
