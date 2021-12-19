@@ -154,6 +154,26 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     print(response)
     await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 
+@slash.slash(name='summarize', description='Summarizes a given text')
+async def summarize(ctx: SlashContext, *, text):
+    with open('C:/Users/holla/Documents/aibot/summarizePrompt.txt', 'r') as f:
+        examples = f.read()
+    
+    openai.api_key = os.getenv("OPENAI_KEY")
+
+    response = openai.Completion.create(
+    engine="curie-instruct-beta-v2",
+    prompt=f"{examples} {text}\n rephrasing:",
+    temperature=0.5,
+    max_tokens=100,
+    top_p=1,
+    frequency_penalty=0.2,
+    presence_penalty=0,
+    stop=["Rephrase this passage in a way that a young child could understand:"]
+    )
+    print(response)
+    await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
+
 
 bot.run(os.getenv('DISCORD_TOKEN'))
 
