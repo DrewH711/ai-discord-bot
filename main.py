@@ -34,13 +34,13 @@ async def ping(ctx: SlashContext):
 @slash.slash(name='help',description='shows help menu')
 async def help(ctx: SlashContext):
     embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
-    embed.add_field(name='ai.help', value='Shows this message', inline=False)
-    embed.add_field(name='ai.status', value='Shows the status of the bot', inline=False)
-    embed.add_field(name='ai.ping', value='Shows the latency of the bot', inline=False)
-    embed.add_field(name='ai.request [engine name]', value='Requests a response from the API', inline=False)
-    embed.add_field(name='ai.explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
-    embed.add_field(name='ai.writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
-    embed.add_field(name='ai.translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='help', value='Shows this message', inline=False)
+    embed.add_field(name='status', value='Shows the status of the bot', inline=False)
+    embed.add_field(name='ping', value='Shows the latency of the bot', inline=False)
+    embed.add_field(name='request [engine name]', value='Requests a response from the API', inline=False)
+    embed.add_field(name='explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
     await ctx.send(embed=embed)
 
 @slash.slash(name='status',description='shows the status of the bot')
@@ -94,7 +94,11 @@ async def writecode(ctx: SlashContext, language, *, prompt):
     stop=["\n\n\n"]
     )
     print(response)
-    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+    if(language=="python"):
+        commentchar='#'
+    else:
+        commentchar='//'
+    await ctx.reply(f'{ctx.author.mention}```{language}\n{commentchar}{prompt} in {language}\n {response.choices[0].text}```')
 
 @slash.slash(name='translatecode',description='translates a code snippet--some languages work better than others')
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
@@ -121,7 +125,7 @@ async def ask(ctx: SlashContext, *, question):
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
-    max_tokens=500,
+    max_tokens=80,
     temperature=0.8,
     top_p=1,
     frequency_penalty=1,
@@ -131,6 +135,24 @@ async def ask(ctx: SlashContext, *, question):
     print(response)
     response=response.choices[0].text.replace('\n','')
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+
+@slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
+async def paragraph_completion(ctx: SlashContext, *, paragraph):
+    with open('C:/Users/holla/Documents/aibot/paragraphSuggestionPrompt.txt', 'r') as f:
+        examples = f.read()
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response = openai.Completion.create(
+    engine="curie",
+    prompt=f"{examples} {paragraph}\n output:",
+    max_tokens=100,
+    temperature=0.7,
+    top_p=1,
+    frequency_penalty=0.7,
+    presence_penalty=0,
+    stop=["Input:", '4.']
+    )
+    print(response)
+    await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 
 
 bot.run(os.getenv('DISCORD_TOKEN'))
