@@ -41,11 +41,14 @@ async def help(ctx: SlashContext):
     embed.add_field(name='explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
     embed.add_field(name='writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
     embed.add_field(name='translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='ask [question]', value='Ask the bot a question', inline=False)
+    embed.add_field(name='paragraph_completion [paragraph]', value='Offers sentence suggestions to continue a paragraph', inline=False)
+    embed.add_field(name='summarize [text]', value='Summarizes a text in a way that anyone can understand', inline=False)
     await ctx.send(embed=embed)
 
 @slash.slash(name='status',description='shows the status of the bot')
 async def status(ctx: SlashContext):
-    embed = discord.Embed(title='Status', description=f"Currently I am {BOTSTATUS}", color=0xffa500)
+    embed = discord.Embed(title='Status', description=f"{BOTSTATUS}", color=0xffa500)
     await ctx.send(embed=embed)
 
 @slash.slash(name='request',description='requests a response from the API')
