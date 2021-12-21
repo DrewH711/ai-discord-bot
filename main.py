@@ -26,6 +26,8 @@ async def on_ready():
 async def on_command_error(ctx,error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.reply(f"{ctx.author.mention}, that command does not exist")
+    if isinstance(error, discord.HTTPException):
+        await ctx.reply(f"{ctx.author.mention}, something went wrong")
 
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
@@ -38,9 +40,9 @@ async def help(ctx: SlashContext):
     embed.add_field(name='status', value='Shows the status of the bot', inline=False)
     embed.add_field(name='ping', value='Shows the latency of the bot', inline=False)
     embed.add_field(name='request [engine name]', value='Requests a response from the API', inline=False)
-    embed.add_field(name='explaincode [language] [code]', value='Explains a code snippet--some languages work better than others', inline=False)
-    embed.add_field(name='writecode [language] [description]', value='Writes a code snippet--some languages work better than others', inline=False)
-    embed.add_field(name='translatecode [starting language] [ending language] [code]', value='Translates a code snippet--some languages work better than others', inline=False)
+    embed.add_field(name='explaincode [language] [code]', value='Explains a code snippet', inline=False)
+    embed.add_field(name='writecode [language] [description]', value='Writes a code snippet--works best with python', inline=False)
+    embed.add_field(name='translatecode [starting language] [ending language] [code]', value='Translates a code snippet', inline=False)
     embed.add_field(name='ask [question]', value='Ask the bot a question', inline=False)
     embed.add_field(name='paragraph_completion [paragraph]', value='Offers sentence suggestions to continue a paragraph', inline=False)
     embed.add_field(name='summarize [text]', value='Summarizes a text in a way that anyone can understand', inline=False)
@@ -63,7 +65,7 @@ async def request(ctx: SlashContext, engine):
     except error.APIError:
         await ctx.reply(f"{engine} is not a valid engine")
 
-@slash.slash(name='explaincode',description='explains a code snippet--some languages work better than others')
+@slash.slash(name='explaincode',description='explains a code snippet')
 async def explaincode(ctx: SlashContext, language, *, code):
     openai.api_key = os.getenv('OPENAI_KEY')
     code=code.replace('```','')
@@ -83,27 +85,34 @@ async def explaincode(ctx: SlashContext, language, *, code):
         response.choices[0].text=response.choices[0].text.replace('#','//')
     await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 
-@slash.slash(name='writecode',description='writes a code snippet--some languages work better than others')
+@slash.slash(name='writecode',description='writes a code snippet--works best with python')
 async def writecode(ctx: SlashContext, language, *, prompt):
     openai.api_key = os.getenv('OPENAI_KEY')
     response=openai.Completion.create(
     engine="davinci-codex",
     prompt=f"write the following {language} code: \n{prompt}:\n",
-    max_tokens=500,
+    max_tokens=400,
     temperature=0,
     top_p=1,
     frequency_penalty=1,
     presence_penalty=0,
-    stop=["\n\n\n"]
+    stop=["\n\n\n", "# ","#write","\t\t\t"]
     )
+    response=response.choices[0].text
     print(response)
+    response=response.replace('       ',' ').replace('!!!','')
+    if language=="c#":
+        language="csharp"
     if(language=="python"):
         commentchar='#'
     else:
         commentchar='//'
-    await ctx.reply(f'{ctx.author.mention}```{language}\n{commentchar}{prompt} in {language}\n {response.choices[0].text}```')
+    try:
+        await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
+    except discord.errors.NotFound:
+        await ctx.send("something went wrong...")
 
-@slash.slash(name='translatecode',description='translates a code snippet--some languages work better than others')
+@slash.slash(name='translatecode',description='translates a code snippet')
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
     openai.api_key = os.getenv("OPENAI_KEY")
     code=code.replace('```','')
