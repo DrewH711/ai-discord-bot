@@ -96,7 +96,7 @@ async def writecode(ctx: SlashContext, language, *, prompt):
     top_p=1,
     frequency_penalty=1,
     presence_penalty=0,
-    stop=["\n\n\n", "# ","#write","\t\t\t"]
+    stop=["\n\n\n", "# ","// why","'''"]
     )
     response=response.choices[0].text
     print(response)
@@ -110,7 +110,7 @@ async def writecode(ctx: SlashContext, language, *, prompt):
     try:
         await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
     except discord.errors.NotFound:
-        await ctx.send("something went wrong...")
+        print("well that's odd") #if anyone knows why this error seems to randomly occur, PLEASE let me know
 
 @slash.slash(name='translatecode',description='translates a code snippet')
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
@@ -138,20 +138,20 @@ async def ask(ctx: SlashContext, *, question):
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
     max_tokens=80,
-    temperature=0.8,
+    temperature=0,
     top_p=1,
     frequency_penalty=1,
     presence_penalty=0,
     stop=["question:"]
     )
-    print(response)
     response=response.choices[0].text.replace('\n','')
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 
 @slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
 async def paragraph_completion(ctx: SlashContext, *, paragraph):
-    with open('C:/Users/holla/Documents/aibot/paragraphSuggestionPrompt.txt', 'r') as f:
+    with open('C:/Users/holla/Documents/aibot/main/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
+        f.close()
     openai.api_key = os.getenv('OPENAI_KEY')
     response = openai.Completion.create(
     engine="curie",
@@ -160,7 +160,7 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     temperature=0.7,
     top_p=1,
     frequency_penalty=0.7,
-    presence_penalty=0,
+    presence_penalty=2,
     stop=["Input:", '4.']
     )
     print(response)
@@ -168,13 +168,33 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
 
 @slash.slash(name='summarize', description='Summarizes a given text')
 async def summarize(ctx: SlashContext, *, text):
-    with open('C:/Users/holla/Documents/aibot/summarizePrompt.txt', 'r') as f:
+    with open('C:/Users/holla/Documents/aibot/main/summarizePrompt.txt', 'r') as f:
         examples = f.read()
-    
+        f.close()
     openai.api_key = os.getenv("OPENAI_KEY")
 
     response = openai.Completion.create(
-    engine="curie-instruct-beta-v2",
+    engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+    prompt=f"{examples} {text}\n rephrasing:",
+    temperature=0.5,
+    max_tokens=100,
+    top_p=1,
+    frequency_penalty=0.2,
+    presence_penalty=0,
+    stop=["Rephrase this passage in a way that a young child could understand:"]
+    )
+    print(response)
+    await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
+
+@bot.command()
+async def summarize(ctx: SlashContext, *, text):
+    with open('C:/Users/holla/Documents/aibot/main/summarizePrompt.txt', 'r') as f:
+        examples = f.read()
+        f.close()
+    openai.api_key = os.getenv("OPENAI_KEY")
+
+    response = openai.Completion.create(
+    engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"{examples} {text}\n rephrasing:",
     temperature=0.5,
     max_tokens=100,
