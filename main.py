@@ -1,3 +1,4 @@
+from discord import message
 import openai
 from openai import error
 import discord
@@ -27,6 +28,29 @@ async def on_command_error(ctx,error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.reply(f"{ctx.author.mention}, that command does not exist")
 
+@bot.event
+async def on_message(message):
+    if message.author==bot.user:
+        return
+    if message.channel.id==804860089403047986:
+        content=message.content
+        openai.api_key = os.getenv("OPENAI_KEY")
+        with open('C:/Users/holla/Documents/aibot/autoModBranch/autoModPrompt.txt') as f:
+            examples=f.read()
+            f.close()
+        response = openai.Completion.create(
+        engine="babbage",
+        prompt=f"{examples} {content}\n Classification: ",
+        temperature=0.7,
+        max_tokens=555,
+        top_p=1,
+        frequency_penalty=1.01,
+        presence_penalty=0,
+        stop=["Message:"]
+        )
+        await message.channel.send(response.choices[0].text)
+        await bot.process_commands(message)
+    await bot.process_commands(message)
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
     await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
