@@ -285,7 +285,7 @@ async def ask(ctx, *, question):
 
 @slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
 async def paragraph_completion(ctx: SlashContext, *, paragraph):
-    with open('C:/Users/holla/Documents/aibot/main/paragraphSuggestionPrompt.txt', 'r') as f:
+    with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
     openai.api_key = os.getenv('OPENAI_KEY')
@@ -303,7 +303,7 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 @bot.command()
 async def paragraph_completion(ctx, *, paragraph):
-    with open('C:/Users/holla/Documents/aibot/main/paragraphSuggestionPrompt.txt', 'r') as f:
+    with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
     openai.api_key = os.getenv('OPENAI_KEY')
@@ -322,7 +322,7 @@ async def paragraph_completion(ctx, *, paragraph):
 
 @slash.slash(name='summarize', description='Summarizes a given text')
 async def summarize(ctx: SlashContext, *, text):
-    with open('C:/Users/holla/Documents/aibot/main/summarizePrompt.txt', 'r') as f:
+    with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
     openai.api_key = os.getenv("OPENAI_KEY")
@@ -341,7 +341,7 @@ async def summarize(ctx: SlashContext, *, text):
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
 @bot.command()
 async def summarize(ctx: SlashContext, *, text):
-    with open('C:/Users/holla/Documents/aibot/main/summarizePrompt.txt', 'r') as f:
+    with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
     openai.api_key = os.getenv("OPENAI_KEY")
