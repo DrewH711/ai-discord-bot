@@ -6,6 +6,7 @@ import os
 from os import getenv
 from dotenv import load_dotenv
 from discord_slash import SlashCommand, SlashContext
+import urllib
 
 load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 
@@ -67,47 +68,47 @@ async def help(ctx):
 @slash.slash(name='status',description='shows the status of the bot')
 async def status(ctx: SlashContext):
     try:
-           x = openai.Engine.retrieve("davinci")
-           codex_status = x.ready
-        except:
-          codex_status = False
-        try:
-           x = openai.Engine.retrieve("babbage-instruct-beta")
-           babbage_status = x.ready
-        except:
-          babbage_status = False
-        try:
-           x = openai.Engine.retrieve("curie")
-           curie_status = x.ready
-        except:
-          curie_status = False
-        try:
-          site_code=urllib.request.urlopen("https://bot.themaddoxnetwork.com").getcode()
-        except:
-          site_code=0
-        if codex_status:
-            codex_status = ":white_check_mark:"
-        else:
-            codex_status = ":x:"
-        if babbage_status:
-            babbage_status = ":white_check_mark:"
-        else:
-            babbage_status = ":x:"
-        if curie_status:
-            curie_status = ":white_check_mark:"
-        else:
-            curie_status = ":x:"
-        if site_code==200:
-            site_status = ":white_check_mark:"
-        else:
-            site_status = ":x:"
-        embedVar = discord.Embed(title="System Status", description="", color=0x779ee4)
-        embedVar.add_field(name="Discord bot", value=":white_check_mark:", inline=False)
-        embedVar.add_field(name="Website", value=site_status, inline=False)
-        embedVar.add_field(name="Coding AI", value=codex_status, inline=False)
-        embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=babbage_status, inline=False)
-        embedVar.add_field(name="Paragraph Completion AI", value=curie_status, inline=False)
-        await ctx.send(embed=embedVar)
+        x = openai.Engine.retrieve("davinci")
+        codex_status = x.ready
+    except:
+        codex_status = False
+    try:
+        x = openai.Engine.retrieve("babbage-instruct-beta")
+        babbage_status = x.ready
+    except:
+        babbage_status = False
+    try:
+        x = openai.Engine.retrieve("curie")
+        curie_status = x.ready
+    except:
+        curie_status = False
+    try:
+        site_code=urllib.request.urlopen("https://bot.themaddoxnetwork.com").getcode()
+    except:
+        site_code=0
+    if codex_status:
+        codex_status = ":white_check_mark:"
+    else:
+        codex_status = ":x:"
+    if babbage_status:
+        babbage_status = ":white_check_mark:"
+    else:
+        babbage_status = ":x:"
+    if curie_status:
+        curie_status = ":white_check_mark:"
+    else:
+        curie_status = ":x:"
+    if site_code==200:
+        site_status = ":white_check_mark:"
+    else:
+        site_status = ":x:"
+    embedVar = discord.Embed(title="System Status", description="", color=0x779ee4)
+    embedVar.add_field(name="Discord bot", value=":white_check_mark:", inline=False)
+    embedVar.add_field(name="Website", value=site_status, inline=False)
+    embedVar.add_field(name="Coding AI", value=codex_status, inline=False)
+    embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=babbage_status, inline=False)
+    embedVar.add_field(name="Paragraph Completion AI", value=curie_status, inline=False)
+    await ctx.send(embed=embedVar)
 
 @slash.slash(name='request',description='requests a response from the API')
 async def request(ctx: SlashContext, engine):
