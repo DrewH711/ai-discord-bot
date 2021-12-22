@@ -13,6 +13,7 @@ load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 bot = commands.Bot(command_prefix='ai.')
 slash=SlashCommand(bot, sync_commands=True)
 bot.remove_command('help')
+openai.api_key = os.getenv('OPENAI_KEY')
 
 @bot.event
 async def on_ready():
@@ -112,7 +113,7 @@ async def status(ctx: SlashContext):
 
 @slash.slash(name='request',description='requests a response from the API')
 async def request(ctx: SlashContext, engine):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
 
     x = openai.Engine.retrieve(f"{engine}")
     #if anyone knows how to actually make this handle the exception properly, please let me know
@@ -124,7 +125,7 @@ async def request(ctx: SlashContext, engine):
 
 @slash.slash(name='explaincode',description='explains a code snippet')
 async def explaincode(ctx: SlashContext, language, *, code):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
@@ -143,7 +144,7 @@ async def explaincode(ctx: SlashContext, language, *, code):
     await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 @bot.command()
 async def explaincode(ctx, language, *, code):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
@@ -163,7 +164,7 @@ async def explaincode(ctx, language, *, code):
 
 @slash.slash(name='writecode',description='writes a code snippet--works best with python')
 async def writecode(ctx: SlashContext, language, *, prompt):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response=openai.Completion.create(
     engine="davinci-codex",
     prompt=f"write the following {language} code: \n{prompt}:\n",
@@ -190,7 +191,7 @@ async def writecode(ctx: SlashContext, language, *, prompt):
 @bot.command()
 async def writecode(ctx, language, *, prompt):
 
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response=openai.Completion.create(
     engine="davinci-codex",
     prompt=f"write the following {language} code: \n{prompt}:\n",
@@ -217,7 +218,7 @@ async def writecode(ctx, language, *, prompt):
 
 @slash.slash(name='translatecode',description='translates a code snippet')
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
-    openai.api_key = os.getenv("OPENAI_KEY")
+
     code=code.replace('```','')
     code=code.replace('`','')    
     response = openai.Completion.create(
@@ -235,7 +236,7 @@ async def translatecode(ctx: SlashContext, language1, language2, *, code):
     await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
 @bot.command()
 async def translatecode(ctx, language1, language2, *, code):
-    openai.api_key = os.getenv("OPENAI_KEY")
+
     code=code.replace('```','')
     code=code.replace('`','')    
     response = openai.Completion.create(
@@ -254,7 +255,7 @@ async def translatecode(ctx, language1, language2, *, code):
 
 @slash.slash(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
 async def ask(ctx: SlashContext, *, question):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
@@ -269,7 +270,7 @@ async def ask(ctx: SlashContext, *, question):
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 @bot.command()
 async def ask(ctx, *, question):
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
@@ -288,7 +289,7 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response = openai.Completion.create(
     engine="curie",
     prompt=f"{examples} {paragraph}\n output:",
@@ -306,7 +307,7 @@ async def paragraph_completion(ctx, *, paragraph):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
-    openai.api_key = os.getenv('OPENAI_KEY')
+
     response = openai.Completion.create(
     engine="curie",
     prompt=f"{examples} {paragraph}\n output:",
@@ -325,7 +326,7 @@ async def summarize(ctx: SlashContext, *, text):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
-    openai.api_key = os.getenv("OPENAI_KEY")
+
 
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
@@ -344,7 +345,7 @@ async def summarize(ctx: SlashContext, *, text):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
-    openai.api_key = os.getenv("OPENAI_KEY")
+
 
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
