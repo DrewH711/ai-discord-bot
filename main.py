@@ -32,6 +32,9 @@ async def on_command_error(ctx,error):
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
     await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
+@bot.command()
+async def ping(ctx):
+    await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
 
 @slash.slash(name='help',description='shows help menu')
 async def help(ctx: SlashContext):
@@ -47,9 +50,27 @@ async def help(ctx: SlashContext):
     embed.add_field(name='paragraph_completion [paragraph]', value='Offers sentence suggestions to continue a paragraph', inline=False)
     embed.add_field(name='summarize [text]', value='Summarizes a text in a way that anyone can understand', inline=False)
     await ctx.send(embed=embed)
-
+@bot.command()
+async def help(ctx):
+    embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
+    embed.add_field(name='help', value='Shows this message', inline=False)
+    embed.add_field(name='status', value='Shows the status of the bot', inline=False)
+    embed.add_field(name='ping', value='Shows the latency of the bot', inline=False)
+    embed.add_field(name='request [engine name]', value='Requests a response from the API', inline=False)
+    embed.add_field(name='explaincode [language] [code]', value='Explains a code snippet', inline=False)
+    embed.add_field(name='writecode [language] [description]', value='Writes a code snippet--works best with python', inline=False)
+    embed.add_field(name='translatecode [starting language] [ending language] [code]', value='Translates a code snippet', inline=False)
+    embed.add_field(name='ask [question]', value='Ask the bot a question', inline=False)
+    embed.add_field(name='paragraph_completion [paragraph]', value='Offers sentence suggestions to continue a paragraph', inline=False)
+    embed.add_field(name='summarize [text]', value='Summarizes a text in a way that anyone can understand', inline=False)
+    await ctx.send(embed=embed)
+    
 @slash.slash(name='status',description='shows the status of the bot')
 async def status(ctx: SlashContext):
+    embed = discord.Embed(title='Status', description=f"{BOTSTATUS}", color=0xffa500)
+    await ctx.send(embed=embed)
+@bot.command()
+async def status(ctx):
     embed = discord.Embed(title='Status', description=f"{BOTSTATUS}", color=0xffa500)
     await ctx.send(embed=embed)
 
@@ -67,6 +88,25 @@ async def request(ctx: SlashContext, engine):
 
 @slash.slash(name='explaincode',description='explains a code snippet')
 async def explaincode(ctx: SlashContext, language, *, code):
+    openai.api_key = os.getenv('OPENAI_KEY')
+    code=code.replace('```','')
+    code=code.replace('`','')
+    response=openai.Completion.create(
+    engine="davinci-codex",
+    prompt=f"explain the following {language} code: \n{code}",
+    max_tokens=500,
+    temperature=0,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["\n\n\n"]
+    )
+    print(response)
+    if(language!="python"):
+        response.choices[0].text=response.choices[0].text.replace('#','//')
+    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+@bot.command()
+async def explaincode(ctx, language, *, code):
     openai.api_key = os.getenv('OPENAI_KEY')
     code=code.replace('```','')
     code=code.replace('`','')
@@ -111,9 +151,54 @@ async def writecode(ctx: SlashContext, language, *, prompt):
         await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
     except discord.errors.NotFound:
         print("well that's odd") #if anyone knows why this error seems to randomly occur, PLEASE let me know
+@bot.command()
+async def writecode(ctx, language, *, prompt):
+
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response=openai.Completion.create(
+    engine="davinci-codex",
+    prompt=f"write the following {language} code: \n{prompt}:\n",
+    max_tokens=400,
+    temperature=0,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["\n\n\n", "# ","// why","'''"]
+    )
+    response=response.choices[0].text
+    print(response)
+    response=response.replace('       ',' ').replace('!!!','')
+    if language=="c#":
+        language="csharp"
+    if(language=="python"):
+        commentchar='#'
+    else:
+        commentchar='//'
+    try:
+        await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
+    except discord.errors.NotFound:
+        print("well that's odd") #if anyone knows why this error seems to randomly occur, PLEASE let me know
 
 @slash.slash(name='translatecode',description='translates a code snippet')
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
+    openai.api_key = os.getenv("OPENAI_KEY")
+    code=code.replace('```','')
+    code=code.replace('`','')    
+    response = openai.Completion.create(
+    engine="davinci-codex",
+    prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
+    temperature=0,
+    max_tokens=500,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=['"""','\n\n\n']
+    )
+    print(response)
+    response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
+    await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+@bot.command()
+async def translatecode(ctx, language1, language2, *, code):
     openai.api_key = os.getenv("OPENAI_KEY")
     code=code.replace('```','')
     code=code.replace('`','')    
@@ -146,9 +231,42 @@ async def ask(ctx: SlashContext, *, question):
     )
     response=response.choices[0].text.replace('\n','')
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+@bot.command()
+async def ask(ctx, *, question):
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response = openai.Completion.create(
+    engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+    prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
+    max_tokens=80,
+    temperature=0,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0,
+    stop=["question:"]
+    )
+    response=response.choices[0].text.replace('\n','')
+    await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 
 @slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
 async def paragraph_completion(ctx: SlashContext, *, paragraph):
+    with open('C:/Users/holla/Documents/aibot/main/paragraphSuggestionPrompt.txt', 'r') as f:
+        examples = f.read()
+        f.close()
+    openai.api_key = os.getenv('OPENAI_KEY')
+    response = openai.Completion.create(
+    engine="curie",
+    prompt=f"{examples} {paragraph}\n output:",
+    max_tokens=100,
+    temperature=0.7,
+    top_p=1,
+    frequency_penalty=0.7,
+    presence_penalty=2,
+    stop=["Input:", '4.']
+    )
+    print(response)
+    await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+@bot.command()
+async def paragraph_completion(ctx, *, paragraph):
     with open('C:/Users/holla/Documents/aibot/main/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
@@ -185,7 +303,6 @@ async def summarize(ctx: SlashContext, *, text):
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
-
 @bot.command()
 async def summarize(ctx: SlashContext, *, text):
     with open('C:/Users/holla/Documents/aibot/main/summarizePrompt.txt', 'r') as f:
