@@ -8,9 +8,11 @@ from os import getenv
 from dotenv import load_dotenv
 from discord_slash import SlashCommand, SlashContext
 
-openai.File.create(file=open("C:/Users/holla/Documents/aibot/autoModBranch/autoMod.jsonl"), purpose="classifications")
+
 load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 BOTSTATUS="under construction"
+openai.api_key=os.getenv("OPENAI_KEY")
+openai.File.create(file=open("C:/Users/holla/Documents/aibot/autoModBranch/autoMod.jsonl"), purpose="classifications")
 
 bot = commands.Bot(command_prefix='ai.')
 slash=SlashCommand(bot, sync_commands=True)
