@@ -7,6 +7,7 @@ from os import getenv
 from dotenv import load_dotenv
 from discord_slash import SlashCommand, SlashContext
 import urllib
+import WebServer
 
 load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 
@@ -360,7 +361,7 @@ async def summarize(ctx: SlashContext, *, text):
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
 
-
+WebServer.start()
 bot.run(os.getenv('DISCORD_TOKEN'))
 
 
