@@ -8,6 +8,7 @@ from os import getenv
 from dotenv import load_dotenv
 from discord_slash import SlashCommand, SlashContext
 
+openai.File.create(file=open("C:/Users/holla/Documents/aibot/autoModBranch/autoMod.jsonl"), purpose="classifications")
 load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
 BOTSTATUS="under construction"
 
@@ -33,11 +34,12 @@ async def on_message(message):
     if message.author==bot.user:
         return
     if message.channel.id==804860089403047986:
+        pass
+        """
+        import jsonlines
         content=message.content
         openai.api_key = os.getenv("OPENAI_KEY")
-        with open('C:/Users/holla/Documents/aibot/autoModBranch/autoModPrompt.txt') as f:
-            examples=f.read()
-            f.close()
+
         response = openai.Completion.create(
         engine="babbage",
         prompt=f"{examples} {content}\n Classification: ",
@@ -50,6 +52,7 @@ async def on_message(message):
         )
         await message.channel.send(response.choices[0].text)
         await bot.process_commands(message)
+        """
     await bot.process_commands(message)
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
