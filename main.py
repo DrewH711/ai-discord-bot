@@ -124,7 +124,7 @@ async def request(ctx: SlashContext, engine):
     except error.APIError:
         await ctx.reply(f"{engine} is not a valid engine")
 
-@slash.slash(name='explaincode',description='explains a code snippet')
+@slash.slash(name='explaincode',description='Explains a code snippet')
 async def explaincode(ctx: SlashContext, language, *, code):
 
     code=code.replace('```','')
