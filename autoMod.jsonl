@@ -1,36 +1,50 @@
 {"text": "how are you today?", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "I don't like you", "label": "3", "metadata":{"intent": "possibly harmful"}}
 {"text": "My favorite movie is Batman", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "I hate you, you're a terrible person", "label": "8", "metadata":{"intent": "harmful"}}
 {"text": "yo, wassup", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "Fuck you", "label": "8", "metadata":{"intent": "harmful"}}
 {"text": "This is really fucking cool", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": "The new spiderman movie was fucking amazing", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": "I can't do that right now", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": "I DIED", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": "😂", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": "I love you", "label": "1", "metadata":{"intent": "not harmful"}}
+{"text": ".help", "label": "1", "metadata":{"intent":"not harmful"}}
+{"text": "if you can't do it soon then we're doing it without you", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "I just failed", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "HAHAHAHAHAHA", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "guys i'm so sad", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "i'm so jealous wtf", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "I hate getting mad at people", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "imagine not doing cool stuff today", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "JUST STOP ARGUING", "label": "2", "metadata":{"intent": "not harmful"}}
+{"text": "I don't like you", "label": "3", "metadata":{"intent": "possibly harmful"}}
+{"text": "<@758182759103956217> you have some explaining to do", "label": "3", "metadata":{"intent": "possibly harmful"}}
+{"text": "oh god what the fuck", "label": "3", "metadata":{"intent": "possibly harmful"}}
+{"text": "dude I fucking hate the word moist", "label": "3", "metadata":{"intent": "possibly harmful"}}
+{"text": "This sucks", "label": "4", "metadata":{"intent": "possibly harmful"}}
+{"text": "her forehead looks like a mountain", "label": "4", "metadata":{"intent": "possibly harmful"}}
+{"text": "shut up", "label": "4", "metadata":{"intent": "possibly harmful"}}
+{"text": "you're a failure", "label": "5", "metadata":{"intent": "possibly harmful"}}
+{"text": "dumbass", "label": "5", "metadata":{"intent": "likely harmful"}}
+{"text": "I DON'T CARE", "label": "6", "metadata":{"intent": "likely harmful"}}
 {"text": "Donald Trump was a great president", "label": "6", "metadata":{"intent": "likely harmful"}}
 {"text": "Joe Biden sucks", "label": "6", "metadata":{"intent": "likely harmful"}}
 {"text": "Joe Biden is the best president we've ever had", "label": "6", "metadata":{"intent": "likely harmful"}}
+{"text": "This is shit", "label": "7", "metadata":{"intent": "likely harmful"}}
+{"text": "I hate you, you're a terrible person", "label": "8", "metadata":{"intent": "harmful"}}
+{"text": "You're a bitch", "label": "8", "metadata":{"intent": "harmful"}}
+{"text": "Fuck you", "label": "8", "metadata":{"intent": "harmful"}}
 {"text": "I hate the Chinese", "label": "10", "metadata":{"intent": "extremely harmful"}}
 {"text": "Black people are terrible", "label": "10", "metadata":{"intent": "extremely harmful"}}
-{"text": "The new spiderman movie was fucking amazing", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "This is shit", "label": "7", "metadata":{"intent": "likely harmful"}}
-{"text": "You're a bitch", "label": "8", "metadata":{"intent": "harmful"}}
-{"text": "This sucks", "label": "4", "metadata":{"intent": "possibly harmful"}}
-{"text": "I can't do that right now", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "if you can't do it soon then we're doing it without you", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "I just failed", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "you're a failure", "label": "5", "metadata":{"intent": "possibly harmful"}}
-{"text": "HAHAHAHAHAHA", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "guys i'm so sad", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "her forehead looks like a mountain", "label": "4", "metadata":{"intent": "possibly harmful"}}
-{"text": "i'm so jealous wtf", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "<@758182759103956217> you have some explaining to do", "label": "3", "metadata":{"intent": "possibly harmful"}}
-{"text": "I DIED", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "😂", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "dumbass", "label": "5", "metadata":{"intent": "likely harmful"}}
-{"text": "I hate getting mad at people", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "oh god what the fuck", "label": "3", "metadata":{"intent": "possibly harmful"}}
-{"text": "shut up", "label": "4", "metadata":{"intent": "possibly harmful"}}
-{"text": "imagine not doing cool stuff today", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "I love you", "label": "1", "metadata":{"intent": "not harmful"}}
-{"text": "I DON'T CARE", "label": "6", "metadata":{"intent": "likely harmful"}}
-{"text": "JUST STOP ARGUING", "label": "2", "metadata":{"intent": "not harmful"}}
-{"text": "dude I fucking hate the word moist", "label": "3", "metadata":{"intent": "possibly harmful"}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
+{"text": "", "label": "", "metadata":{"intent":""}}
