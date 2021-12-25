@@ -1,5 +1,5 @@
 import openai
-from openai import error
+from openai import error as aierror
 import discord
 from discord.ext import commands
 import os
@@ -115,13 +115,13 @@ async def status(ctx: SlashContext):
 @slash.slash(name='request',description='requests a response from the API')
 async def request(ctx: SlashContext, engine):
 
-
-    x = openai.Engine.retrieve(f"{engine}")
-    #if anyone knows how to actually make this handle the exception properly, please let me know
-    #I've tried all kinds of variations of "openai.error.APIError" but it still doesn't work 
     try:
-        await ctx.reply(f"{x.id} is available: {x.ready}")
-    except error.APIError:
+        x = openai.Engine.retrieve(f"{engine}")
+        if(x.ready):
+            await ctx.reply(f"{x.id} is available")
+        else:
+            await ctx.reply(f"{x.id} is not available")
+    except aierror.APIError:
         await ctx.reply(f"{engine} is not a valid engine")
 
 @slash.slash(name='explaincode',description='explains a code snippet')
