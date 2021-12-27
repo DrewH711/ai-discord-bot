@@ -25,6 +25,9 @@ class Client(discord.Client):
 
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round(self.latency * 1000)}ms')
+    
+    async def on_ready(self):
+        print(f"Logged on as {self.user}!")
 
-bot=Client(discord.Client)
+bot=Client()
 bot.run(os.getenv('DISCORD_TOKEN'))

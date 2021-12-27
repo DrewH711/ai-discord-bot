@@ -142,3 +142,5 @@ async def summarize(ctx, *, text):
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
+
+print("commands imported")
