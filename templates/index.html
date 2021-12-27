@@ -1,106 +1,233 @@
-<!DOCTYPE html>
-<html lang="en" class="no-js">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
     <title>AI Bot</title>
-    <link rel="stylesheet" href="/static/css/landing.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta name="description" content="Chat with a friend, get coding help, ai based moderation, and much more!" />
+    <meta property="og:site_name" content="AI Bot" />
+    <meta property="og:title" content="AI Bot" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Chat with a friend, get coding help, ai based moderation, and much more!" />
+    <meta property="og:image" content="https://bot.themaddoxnetwork.com/static/images/card.jpg?v=af5b913c" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:url" content="https://bot.themaddoxnetwork.com" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://bot.themaddoxnetwork.com" />
     <link rel="shortcut icon" href="/static/images/logo.jpg" />
-    <meta property="og:title" content="Ai Bot" />
-    <meta
-      property="og:description"
-      content="AI Bot
-                                    Chat with one of the Worlds most advanced AIs in a Discord bot."
-    />
+    <link href="https://fonts.googleapis.com/css?family=Sora:700,700italic,400,400italic%7CInter:300,300italic" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="static/css/main.css">
 
-    <meta property="og:url" content="https://bot.themaddoxnetwork.com/" />
-  </head>
-  <body class="has-animations">
-    <div class="body-wrap">
-      <main class="site-content">
-        <section class="hero section illustration-section-01">
-          <div class="container">
-            <div class="hero-inner section-inner">
-              <div class="split-wrap invert-mobile">
-                <div class="split-item">
-                  <div
-                    class="hero-content split-item-content center-content-mobile"
-                  >
-                    <h1
-                      class="mt-0 mb-16 reveal-from-bottom"
-                      data-reveal-delay="150"
-                    >
-                      AI Bot<br />Talk to the future.
-                    </h1>
-                    <p
-                      class="mt-0 mb-32 reveal-from-bottom"
-                      data-reveal-delay="300"
-                    >
-                      Chat with a friend, get coding help, ai based moderation, and much more!
-                    </p>
-                    <div class="reveal-from-bottom" data-reveal-delay="450">
-                      <a
-                        class="button button-primary button-wide-mobile pulse"
-                        style="
-                          border: 0;
-                          background: linear-gradient(
-                            100deg,
-                            #376df9 0,
-                            #ff5fa0 75%,
-                            #ffc55a 100%
-                          );
-                        "
-                        href="https://discord.com/api/oauth2/authorize?client_id=923034536395296788&permissions=1644972474359&scope=bot%20applications.commands"
-                        >Add to Discord</a
-                      >
+    <noscript>
+        <style>
+            body {
+                overflow: auto !important;
+            }
+            body:after {
+                display: none !important;
+            }
+            #main > .inner {
+                opacity: 1.0 !important;
+            }
+        </style>
+    </noscript>
+</head>
+
+<body class="is-loading">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 40 40" display="none" width="0" height="0">
+        <symbol id="icon-966" viewBox="0 0 40 40">
+            <path d="M34.4,23.1c-0.2,0.3-0.5,0.4-0.8,0.4L12.2,26c0.2,0.8,0.3,1.3,0.3,1.4c0,0.2-0.2,0.7-0.5,1.3h18.8 c0.4,0,0.7,0.1,0.9,0.4c0.3,0.3,0.4,0.6,0.4,0.9c0,0.4-0.1,0.7-0.4,0.9c-0.3,0.3-0.6,0.4-0.9,0.4h-1.3H11.2H9.9 c-0.4,0-0.7-0.1-0.9-0.4c-0.3-0.3-0.4-0.6-0.4-0.9c0-0.2,0.1-0.4,0.2-0.6c0.1-0.3,0.2-0.5,0.3-0.7c0.1-0.2,0.3-0.5,0.4-0.8 c0.2-0.3,0.3-0.5,0.3-0.6l-3.6-18H2c-0.4,0-0.7-0.1-0.9-0.4C0.8,8.7,0.7,8.4,0.7,8c0-0.4,0.1-0.7,0.4-0.9C1.3,6.8,1.6,6.7,2,6.7h5.2 c0.2,0,0.4,0,0.6,0.1C8,6.9,8.1,7,8.2,7.1c0.1,0.1,0.2,0.3,0.3,0.5C8.6,7.9,8.6,8,8.7,8.2c0,0.1,0.1,0.3,0.1,0.6 c0,0.3,0.1,0.4,0.1,0.5h24.6c0.4,0,0.7,0.1,0.9,0.4c0.3,0.3,0.4,0.6,0.4,0.9v11.6C34.8,22.5,34.6,22.8,34.4,23.1z M32.5,11.5 c-0.1-0.1-0.1-0.1-0.5-0.1c-3.6,0-22.7,0-22.7,0l2.4,12.2c0,0,17.4-1.9,20.5-2.2c0.3,0,0.2-0.1,0.3-0.2c0.1-0.1,0.1-0.1,0.1-0.4 c0-1.5,0-7.3,0-8.9C32.6,11.7,32.6,11.6,32.5,11.5z M31.4,32.2c0.5,0.5,0.8,1.1,0.8,1.9c0,0.7-0.3,1.3-0.8,1.9 c-0.5,0.5-1.1,0.8-1.8,0.8c-0.7,0-1.3-0.3-1.8-0.8c-0.5-0.5-0.8-1.1-0.8-1.9c0-0.7,0.3-1.3,0.8-1.9c0.5-0.5,1.1-0.8,1.8-0.8 C30.2,31.4,30.8,31.7,31.4,32.2z M13,32.2c0.5,0.5,0.8,1.1,0.8,1.9c0,0.7-0.3,1.3-0.8,1.9c-0.5,0.5-1.1,0.8-1.8,0.8 c-0.7,0-1.3-0.3-1.8-0.8c-0.5-0.5-0.8-1.1-0.8-1.9c0-0.7,0.3-1.3,0.8-1.9c0.5-0.5,1.1-0.8,1.8-0.8C11.9,31.4,12.5,31.7,13,32.2z"
+            />
+        </symbol>
+        <symbol id="icon-9c2" viewBox="0 0 40 40">
+            <path d="M34,11.7c0-0.6-0.2-1.2-0.7-1.6l-3.2-3.2c-0.4-0.4-1-0.7-1.6-0.7s-1.2,0.2-1.6,0.7L20,13.8l-6.9-6.9c-0.4-0.4-1-0.7-1.6-0.7 c-0.6,0-1.2,0.2-1.6,0.7l-3.2,3.2c-0.4,0.4-0.7,1-0.7,1.6c0,0.6,0.2,1.2,0.7,1.6l6.9,6.9l-6.9,6.9c-0.4,0.4-0.7,1-0.7,1.6 s0.2,1.2,0.7,1.6l3.2,3.2c0.4,0.4,1,0.7,1.6,0.7c0.6,0,1.2-0.2,1.6-0.7l6.9-6.9l6.9,6.9c0.4,0.4,1,0.7,1.6,0.7s1.2-0.2,1.6-0.7 l3.2-3.2c0.4-0.4,0.7-1,0.7-1.6s-0.2-1.2-0.7-1.6l-6.9-6.9l6.9-6.9C33.8,12.9,34,12.3,34,11.7z"
+            />
+        </symbol>
+        <symbol id="icon-93f" viewBox="0 0 40 40">
+            <path d="M33.2,8.3c-2.5-1.1-5.1-1.9-7.9-2.4c-0.3,0.6-0.7,1.4-1,2c-2.9-0.4-5.8-0.4-8.7,0c-0.3-0.6-0.7-1.4-1-2 c-2.8,0.5-5.4,1.3-7.9,2.4c-5,7.2-6.3,14.2-5.6,21.1c3.3,2.3,6.5,3.8,9.6,4.7c0.8-1,1.5-2.1,2.1-3.3c-1.1-0.4-2.2-0.9-3.2-1.5 c0.3-0.2,0.5-0.4,0.8-0.6c6.3,2.8,13,2.8,19.2,0c0.3,0.2,0.5,0.4,0.8,0.6c-1,0.6-2.1,1.1-3.2,1.5c0.6,1.1,1.3,2.2,2.1,3.3 c3.1-0.9,6.3-2.4,9.6-4.7C39.7,21.4,37.5,14.4,33.2,8.3z M13.7,25.1c-1.9,0-3.4-1.7-3.4-3.7s1.5-3.7,3.4-3.7c1.9,0,3.5,1.7,3.4,3.7 C17.1,23.4,15.6,25.1,13.7,25.1z M26.3,25.1c-1.9,0-3.4-1.7-3.4-3.7s1.5-3.7,3.4-3.7c1.9,0,3.5,1.7,3.4,3.7 C29.7,23.4,28.2,25.1,26.3,25.1z"
+            />
+        </symbol>
+    </svg>
+    <div id="wrapper">
+        <div id="main">
+            <div class="inner">
+                <div id="container03" class="container default">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <div id="image05" class="image"><span class="frame"><img src="static/images/image05.jpg?v=af5b913c" alt="AI Bot Logo" /></span>
+                            </div>
+                            <h1 id="text28" class="style3">AI Bot</h1>
+                            <p id="text03" class="style1">Chat with a friend, get coding help, ai based moderation, and much more!</p>
+                            <ul id="buttons03" class="style2 buttons">
+                                <li>
+                                    <a href="https://discord.com/api/oauth2/authorize?client_id=923034536395296788&permissions=1644972474359&scope=bot%20applications.commands" class="button n01">
+                                        <svg>
+                                            <use xlink:href="#icon-93f"></use>
+                                        </svg><span class="label">Add to Discord</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                  </div>
-                  <style>
-                    @media (min-width: 641px) {
-                      .hero .split-wrap .split-item {
-                        min-height: 492px;
-                      }
-                    }
-                  </style>
                 </div>
-              </div>
+                <div id="container01" data-scroll-id="start" data-scroll-behavior="center" data-scroll-offset="0" data-scroll-invisible="1" class="container columns full screen">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <div>
+                                <div id="image03" class="style1 image"><span class="frame"><img src="static/images/image03.png?v=af5b913c" alt="" /></span>
+                                </div>
+                                <h3 id="text01" class="style2">Questions and Text Analysis</h3>
+                                <p id="text02" class="style1">Ask simple questions, have the bot summarize a story, or have the bot write its own story based on your prompts.</p>
+                            </div>
+                            <div>
+                                <div id="image02" class="style1 image"><span class="frame"><img src="static/images/image02.png?v=af5b913c" alt="" /></span>
+                                </div>
+                                <h3 id="text06" class="style2">Coding</h3>
+                                <p id="text07" class="style1">Explain code, write code, or translate code in over a dozen languages</p>
+                            </div>
+                            <div>
+                                <div id="image04" class="style1 image"><span class="frame"><img src="static/images/image04.png?v=af5b913c" alt="" /></span>
+                                </div>
+                                <h3 id="text04" class="style2">Chat</h3>
+                                <p id="text05" class="style1">Go to a VC and have a conversation with the bot</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="container04" class="container default">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <div id="image01" class="style1 image"><span class="frame"><img src="static/images/image01.svg?v=af5b913c" alt="" /></span>
+                            </div>
+                            <h3 id="text17" class="style2">Secure and Private</h3>
+                            <p id="text22" class="style1">All text sent to the bot is never saved and audio from in the VC is deleted right after it is processed so you never have to worry about your messages being seen by others.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr id="divider01" class="style1 full screen">
+                <div id="container05" class="style1 container default">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <h2 id="text14" class="style3">Want More?</h2>
+                            <p id="text15" class="style1">Subscribe to AI Bot Premium to have limits removed and unlock more features</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="container02" class="container columns">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <div>
+                                <h3 id="text24" class="style2">Standard</h3>
+                                <h2 id="text16" class="style4">Free</h2>
+                                <div id="list01" class="list">
+                                    <ul>
+                                        <li>
+                                            <p>Ask Questions</p>
+                                        </li>
+                                        <li>
+                                            <p>Paragraph Completion</p>
+                                        </li>
+                                        <li>
+                                            <p>Summarize Text</p>
+                                        </li>
+                                        <li>
+                                            <p>Explain Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Write Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Translate Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Conversation Mode</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul id="buttons04" class="style1 buttons">
+                                    <li>
+                                        <a href="https://discord.com/api/oauth2/authorize?client_id=923034536395296788&permissions=1644972474359&scope=bot%20applications.commands" class="button n01">
+                                            <svg>
+                                                <use xlink:href="#icon-966"></use>
+                                            </svg><span class="label">Add to Discord</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 id="text12" class="style2">Premium (Yearly)</h3>
+                                <h2 id="text10" class="style5">$10</h2>
+                                <div id="list02" class="list">
+                                    <ul>
+                                        <li>
+                                            <p>Ask Questions</p>
+                                        </li>
+                                        <li>
+                                            <p>Paragraph Completion</p>
+                                        </li>
+                                        <li>
+                                            <p>Summarize Text</p>
+                                        </li>
+                                        <li>
+                                            <p>Explain Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Write Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Translate Code</p>
+                                        </li>
+                                        <li>
+                                            <p>Conversation Mode</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul id="buttons05" class="style3 buttons">
+                                    <li>
+                                        <a href="#" style="pointer-events: none" class="button n01">
+                                            <svg>
+                                                <use xlink:href="#icon-9c2"></use>
+                                            </svg><span class="label">Not Yet Avaliable for Purchase</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr id="divider02" class="style1 full screen">
+                <div id="container06" class="style1 container default">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <p id="text09" class="style1">Take your Discord server to the next level</p>
+                            <ul id="buttons02" class="style2 buttons">
+                                <li>
+                                    <a href="https://discord.com/api/oauth2/authorize?client_id=923034536395296788&permissions=1644972474359&scope=bot%20applications.commands" class="button n01">
+                                        <svg>
+                                            <use xlink:href="#icon-93f"></use>
+                                        </svg><span class="label">Add to Discord</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <hr id="divider03" class="style1 full screen">
+                <div id="container07" class="container default">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <p id="text23" class="style6">© Drew and Maddox All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </section>
-
-        
-
-        
-      </main>
-      <footer class="site-footer center-content-mobile">
-        <div class="container">
-          <div class="site-footer-inner">
-            <div class="footer-top space-between text-xxs">
-              <div class="brand">
-              </div>
-            </div>
-            <div
-              class="footer-bottom space-between text-xxs invert-order-desktop"
-            >
-              <nav class="footer-nav">
-                <ul class="list-reset">
-                  <li>
-                  </li>
-                  <!--                                          <li><a href="#">Contact</a></li>-->
-                  <!--                                                <li><a href="#">About us</a></li>-->
-                  <!--                                                <li><a href="#">FAQ's</a></li>-->
-                  <!--                                                <li><a href="#">Support</a></li>-->
-                </ul>
-              </nav>
-              <div class="footer-copyright">
-                &copy; 2021 Drew and Maddox, all rights reserved
-              </div>
-            </div>
-          </div>
         </div>
-      </footer>
     </div>
-    <script src="/static/js/landing.js"></script>
-  </body>
+    <script src="static/js/main.js"></script>
+</body>
+
 </html>
