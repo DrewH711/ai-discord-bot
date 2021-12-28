@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 openai.api_key=os.getenv('OPENAI_KEY')
+
 async def help(ctx):
     embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
     embed.add_field(name='help', value='Shows this message', inline=False)
