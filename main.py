@@ -25,6 +25,11 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name='in development'), status=discord.Status.do_not_disturb)
 
 @bot.event
+async def on_guild_join(guild):
+    embed=discord.Embed(title="Thanks For Adding Me!", description=f"Thanks for adding me to {guild.name}! You can use the `/help` command to get started!", color=0x779ee4)
+    await guild.text_channels[0].send(embed=embed)
+    
+@bot.event
 async def on_command_error(ctx,error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.reply(f"{ctx.author.mention}, that command does not exist")
