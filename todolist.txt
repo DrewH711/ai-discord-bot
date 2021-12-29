@@ -1,4 +1,0 @@
-Add voice command feature
-Add/Improve AutoMod feature
-Redo code system for the bot so that everything isn't defined in main.py
-Improve the bot's error reporting
