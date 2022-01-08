@@ -129,6 +129,7 @@ async def request(ctx: SlashContext, engine):
         await ctx.reply(f"{engine} is not a valid engine")
 
 @slash.slash(name='explaincode',description='explains a code snippet')
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def explaincode(ctx: SlashContext, language, *, code):
 
     code=code.replace('```','')
@@ -148,12 +149,13 @@ async def explaincode(ctx: SlashContext, language, *, code):
         response.choices[0].text=response.choices[0].text.replace('#','//')
     await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 @bot.command()
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def explaincode(ctx, language, *, code):
 
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
-    engine="davinci-codex",
+    engine="cushman-codex",
     prompt=f"explain the following {language} code: \n{code}",
     max_tokens=500,
     temperature=0,
@@ -166,12 +168,18 @@ async def explaincode(ctx, language, *, code):
     if(language!="python"):
         response.choices[0].text=response.choices[0].text.replace('#','//')
     await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+@explaincode.error
+async def explaincode(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
 
 @slash.slash(name='writecode',description='writes a code snippet--works best with python')
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def writecode(ctx: SlashContext, language, *, prompt):
     try:
         response=openai.Completion.create(
-        engine="davinci-codex",
+        engine="cushman-codex",
         prompt=f"write the following {language} code: \n{prompt}:\n",
         max_tokens=400,
         temperature=0,
@@ -193,13 +201,11 @@ async def writecode(ctx: SlashContext, language, *, prompt):
         await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
     except discord.errors.NotFound:
         await ctx.send("Sorry, something went wrong. Your request likely timed out")
-        
 @bot.command()
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def writecode(ctx, language, *, prompt):
-
-
     response=openai.Completion.create(
-    engine="davinci-codex",
+    engine="cushman-codex",
     prompt=f"write the following {language} code: \n{prompt}:\n",
     max_tokens=400,
     temperature=0,
@@ -221,14 +227,19 @@ async def writecode(ctx, language, *, prompt):
         await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
     except discord.errors.NotFound:
         print("well that's odd") #if anyone knows why this error seems to randomly occur, PLEASE let me know
+@writecode.error
+async def explaincodeError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
 
 @slash.slash(name='translatecode',description='translates a code snippet')
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def translatecode(ctx: SlashContext, language1, language2, *, code):
-
     code=code.replace('```','')
     code=code.replace('`','')    
     response = openai.Completion.create(
-    engine="davinci-codex",
+    engine="cushman-codex",
     prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
     temperature=0,
     max_tokens=500,
@@ -241,12 +252,13 @@ async def translatecode(ctx: SlashContext, language1, language2, *, code):
     response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
     await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
 @bot.command()
+@commands.cooldown(1, 45, commands.BucketType.user)
 async def translatecode(ctx, language1, language2, *, code):
 
     code=code.replace('```','')
     code=code.replace('`','')    
     response = openai.Completion.create(
-    engine="davinci-codex",
+    engine="cushman-codex",
     prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
     temperature=0,
     max_tokens=500,
@@ -258,8 +270,14 @@ async def translatecode(ctx, language1, language2, *, code):
     print(response)
     response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
     await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+@translatecode.error
+async def translatecodError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
 
 @slash.slash(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def ask(ctx: SlashContext, *, question):
     if len(question)>400:
         await(ctx.reply(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 400 characters.'))
@@ -277,6 +295,7 @@ async def ask(ctx: SlashContext, *, question):
     response=response.choices[0].text.replace('\n','')
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 @bot.command()
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def ask(ctx, *, question):
 
     response = openai.Completion.create(
@@ -291,8 +310,14 @@ async def ask(ctx, *, question):
     )
     response=response.choices[0].text.replace('\n','')
     await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+@ask.error
+async def askError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
 
 @slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def paragraph_completion(ctx: SlashContext, *, paragraph):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
@@ -311,6 +336,7 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     print(response)
     await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 @bot.command()
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def paragraph_completion(ctx, *, paragraph):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
@@ -328,8 +354,14 @@ async def paragraph_completion(ctx, *, paragraph):
     )
     print(response)
     await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+@paragraph_completion.error
+async def paragraph_completionError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
 
 @slash.slash(name='summarize', description='Summarizes a given text')
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def summarize(ctx: SlashContext, *, text):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
@@ -349,6 +381,7 @@ async def summarize(ctx: SlashContext, *, text):
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
 @bot.command()
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def summarize(ctx: SlashContext, *, text):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
@@ -367,7 +400,12 @@ async def summarize(ctx: SlashContext, *, text):
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
-    
+@summarize.error
+async def summarizeError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        await ctx.send(embed=em)
+
 WebServer.start()
 bot.run(os.getenv('DISCORD_TOKEN'))
 
