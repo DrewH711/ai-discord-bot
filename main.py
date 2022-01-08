@@ -22,7 +22,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Game(name='in development'), status=discord.Status.do_not_disturb)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='/help'), status=discord.Status.online)
 
 @bot.event
 async def on_guild_join(guild):
