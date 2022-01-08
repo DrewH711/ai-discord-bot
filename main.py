@@ -114,7 +114,6 @@ async def status(ctx: SlashContext):
     embedVar.add_field(name="Website", value=site_status, inline=False)
     embedVar.add_field(name="Coding AI", value=codex_status, inline=False)
     embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=babbage_status, inline=False)
-    embedVar.add_field(name="Paragraph Completion AI", value=curie_status, inline=False)
     await ctx.send(embed=embedVar)
 
 @slash.slash(name='request',description='requests a response from the API')
