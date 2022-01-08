@@ -35,6 +35,8 @@ async def on_command_error(ctx,error):
         await ctx.reply(f"{ctx.author.mention}, that command does not exist")
     if isinstance(error, discord.HTTPException):
         await ctx.reply(f"{ctx.author.mention}, something went wrong")
+    if isinstance(error,commands.errors.CommandOnCooldown):
+        await ctx.reply(f"{ctx.author.mention}, you are on cooldown")
 
 @slash.slash(name='ping',description='latency test')
 async def ping(ctx: SlashContext):
@@ -131,7 +133,6 @@ async def request(ctx: SlashContext, engine):
 @slash.slash(name='explaincode',description='explains a code snippet')
 @commands.cooldown(1, 45, commands.BucketType.user)
 async def explaincode(ctx: SlashContext, language, *, code):
-
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
@@ -171,7 +172,7 @@ async def explaincode(ctx, language, *, code):
 @explaincode.error
 async def explaincode(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
+        em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.0f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
 @slash.slash(name='writecode',description='writes a code snippet--works best with python')
