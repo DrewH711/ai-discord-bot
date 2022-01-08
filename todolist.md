@@ -5,6 +5,6 @@
 4. Improve the bot's error reporting
 
 **future updates**
-1. Slash commands
+1. Voice Chatting
 2. Automod
 3. Any feature requests that come up

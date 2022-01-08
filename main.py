@@ -9,7 +9,7 @@ from discord_slash import SlashCommand, SlashContext
 import urllib
 import WebServer
 
-load_dotenv("C:/Users/holla/Documents/aibot/keys/keys.env")
+load_dotenv("keys.env")
 
 bot = commands.Bot(command_prefix='ai.')
 slash=SlashCommand(bot, sync_commands=True)
@@ -75,7 +75,7 @@ async def help(ctx):
 @slash.slash(name='status',description='shows the status of the bot')
 async def status(ctx: SlashContext):
     try:
-        x = openai.Engine.retrieve("davinci")
+        x = openai.Engine.retrieve("cushman-codex")
         codex_status = x.ready
     except:
         codex_status = False
@@ -135,7 +135,7 @@ async def explaincode(ctx: SlashContext, language, *, code):
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
-    engine="davinci-codex",
+    engine="cushman-codex",
     prompt=f"explain the following {language} code: \n{code}",
     max_tokens=500,
     temperature=0,
@@ -170,30 +170,31 @@ async def explaincode(ctx, language, *, code):
 
 @slash.slash(name='writecode',description='writes a code snippet--works best with python')
 async def writecode(ctx: SlashContext, language, *, prompt):
-
-    response=openai.Completion.create(
-    engine="davinci-codex",
-    prompt=f"write the following {language} code: \n{prompt}:\n",
-    max_tokens=400,
-    temperature=0,
-    top_p=1,
-    frequency_penalty=1,
-    presence_penalty=0,
-    stop=["\n\n\n", "# ","// why","'''"]
-    )
-    response=response.choices[0].text
-    print(response)
-    response=response.replace('       ',' ').replace('!!!','')
-    if language=="c#":
-        language="csharp"
-    if(language=="python"):
-        commentchar='#'
-    else:
-        commentchar='//'
     try:
+        response=openai.Completion.create(
+        engine="davinci-codex",
+        prompt=f"write the following {language} code: \n{prompt}:\n",
+        max_tokens=400,
+        temperature=0,
+        top_p=1,
+        frequency_penalty=1,
+        presence_penalty=0,
+        stop=["\n\n\n", "# ","// why","'''"]
+        )
+        response=response.choices[0].text
+        print(response)
+        response=response.replace('       ',' ').replace('!!!','')
+        if language=="c#":
+            language="csharp"
+        if(language=="python"):
+            commentchar='#'
+        else:
+            commentchar='//'
+        
         await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
     except discord.errors.NotFound:
-        print("well that's odd") #if anyone knows why this error seems to randomly occur, PLEASE let me know
+        await ctx.send("Sorry, something went wrong. Your request likely timed out")
+        
 @bot.command()
 async def writecode(ctx, language, *, prompt):
 
@@ -261,7 +262,9 @@ async def translatecode(ctx, language1, language2, *, code):
 
 @slash.slash(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
 async def ask(ctx: SlashContext, *, question):
-
+    if len(question)>400:
+        await(ctx.reply(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 400 characters.'))
+        return
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
     prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
@@ -365,7 +368,7 @@ async def summarize(ctx: SlashContext, *, text):
     )
     print(response)
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
-    #test change
+    
 WebServer.start()
 bot.run(os.getenv('DISCORD_TOKEN'))
 
