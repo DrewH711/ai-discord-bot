@@ -5,14 +5,15 @@ from discord.ext import commands
 import os
 from os import getenv
 from dotenv import load_dotenv
-from discord_slash import SlashCommand, SlashContext
+from discord_ui import Components, UI, create_choice
 import urllib
-import WebServer
 
-load_dotenv("keys.env")
+from pandas import options
+import WebServer
+load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 
 bot = commands.Bot(command_prefix='ai.')
-slash=SlashCommand(bot, sync_commands=True)
+ui=UI(bot)
 bot.remove_command('help')
 openai.api_key = os.getenv('OPENAI_KEY')
 
@@ -30,23 +31,23 @@ async def on_guild_join(guild):
     await guild.text_channels[0].send(embed=embed)
     
 @bot.event
-async def on_command_error(ctx,error):
+async def on_command_error(ctx, error:commands.CommandError):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.reply(f"{ctx.author.mention}, that command does not exist")
+        await ctx.send(f"{ctx.author.mention}, that command does not exist")
     if isinstance(error, discord.HTTPException):
-        await ctx.reply(f"{ctx.author.mention}, something went wrong")
+        await ctx.send(f"{ctx.author.mention}, something went wrong")
     if isinstance(error,commands.errors.CommandOnCooldown):
-        await ctx.reply(f"{ctx.author.mention}, you are on cooldown")
+        await ctx.send(f"{ctx.author.mention}, you are on cooldown")
 
-@slash.slash(name='ping',description='latency test')
-async def ping(ctx: SlashContext):
-    await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
+@ui.slash.command(name='ping',description='latency test')
+async def ping(ctx):
+    await ctx.send(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
 @bot.command()
 async def ping(ctx):
-    await ctx.reply(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
+    await ctx.send(f'Pong! Responded in {bot.latency * 1000:.0f}ms')
 
-@slash.slash(name='help',description='shows help menu')
-async def help(ctx: SlashContext):
+@ui.slash.command(name='help',description='shows help menu')
+async def help(ctx):
     embed = discord.Embed(title='Help', description='List of commands', color=0x00ff00)
     embed.add_field(name='help', value='Shows this message', inline=False)
     embed.add_field(name='status', value='Shows the status of the bot', inline=False)
@@ -74,8 +75,8 @@ async def help(ctx):
     embed.add_field(name='summarize [text]', value='Summarizes a text in a way that anyone can understand', inline=False)
     await ctx.send(embed=embed)
     
-@slash.slash(name='status',description='shows the status of the bot')
-async def status(ctx: SlashContext):
+@ui.slash.command(name='status',description='shows the status of the bot')
+async def status(ctx):
     try:
         x = openai.Engine.retrieve("cushman-codex")
         codex_status = x.ready
@@ -118,21 +119,22 @@ async def status(ctx: SlashContext):
     embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=babbage_status, inline=False)
     await ctx.send(embed=embedVar)
 
-@slash.slash(name='request',description='requests a response from the API')
-async def request(ctx: SlashContext, engine):
+#request command
+@ui.slash.command(name='request', description='requests a response from the API')
+async def request(ctx, engine: str):
 
     try:
         x = openai.Engine.retrieve(f"{engine}")
         if(x.ready):
-            await ctx.reply(f"{x.id} is available")
+            await ctx.send(f"{x.id} is available")
         else:
-            await ctx.reply(f"{x.id} is not available")
+            await ctx.send(f"{x.id} is not available")
     except aierror.APIError:
-        await ctx.reply(f"{engine} is not a valid engine")
+        await ctx.send(f"{engine} is not a valid engine")
 
-@slash.slash(name='explaincode',description='explains a code snippet')
-@commands.cooldown(1, 45, commands.BucketType.user)
-async def explaincode(ctx: SlashContext, language, *, code):
+#explaincode command
+@ui.slash.command(name='explaincode',description='explains a code snippet')
+async def explaincode(ctx, language: str, *, code: str):
     code=code.replace('```','')
     code=code.replace('`','')
     response=openai.Completion.create(
@@ -148,10 +150,10 @@ async def explaincode(ctx: SlashContext, language, *, code):
     print(response)
     if(language!="python"):
         response.choices[0].text=response.choices[0].text.replace('#','//')
-    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 @bot.command()
 @commands.cooldown(1, 45, commands.BucketType.user)
-async def explaincode(ctx, language, *, code):
+async def explaincode(ctx, language: str, *, code: str):
 
     code=code.replace('```','')
     code=code.replace('`','')
@@ -168,16 +170,16 @@ async def explaincode(ctx, language, *, code):
     print(response)
     if(language!="python"):
         response.choices[0].text=response.choices[0].text.replace('#','//')
-    await ctx.reply(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+    await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
 @explaincode.error
 async def explaincode(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.0f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
-@slash.slash(name='writecode',description='writes a code snippet--works best with python')
+@ui.slash.command(name='writecode',description='writes a code snippet--works best with python')
 @commands.cooldown(1, 45, commands.BucketType.user)
-async def writecode(ctx: SlashContext, language, *, prompt):
+async def writecode(ctx, language: str, *, prompt: str):
     try:
         response=openai.Completion.create(
         engine="cushman-codex",
@@ -204,7 +206,7 @@ async def writecode(ctx: SlashContext, language, *, prompt):
         await ctx.send("Sorry, something went wrong. Your request likely timed out")
 @bot.command()
 @commands.cooldown(1, 45, commands.BucketType.user)
-async def writecode(ctx, language, *, prompt):
+async def writecode(ctx, language: str, *, prompt: str):
     response=openai.Completion.create(
     engine="cushman-codex",
     prompt=f"write the following {language} code: \n{prompt}:\n",
@@ -234,9 +236,9 @@ async def explaincodeError(ctx, error):
         em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
-@slash.slash(name='translatecode',description='translates a code snippet')
+@ui.slash.command(name='translatecode',description='translates a code snippet')
 @commands.cooldown(1, 45, commands.BucketType.user)
-async def translatecode(ctx: SlashContext, language1, language2, *, code):
+async def translatecode(ctx, language1: str, language2: str, *, code: str):
     code=code.replace('```','')
     code=code.replace('`','')    
     response = openai.Completion.create(
@@ -251,10 +253,10 @@ async def translatecode(ctx: SlashContext, language1, language2, *, code):
     )
     print(response)
     response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
-    await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+    await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
 @bot.command()
 @commands.cooldown(1, 45, commands.BucketType.user)
-async def translatecode(ctx, language1, language2, *, code):
+async def translatecode(ctx, language1: str, language2: str, *, code: str):
 
     code=code.replace('```','')
     code=code.replace('`','')    
@@ -270,16 +272,16 @@ async def translatecode(ctx, language1, language2, *, code):
     )
     print(response)
     response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
-    await ctx.reply(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+    await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
 @translatecode.error
 async def translatecodError(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
-@slash.slash(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
+@ui.slash.command(name='ask', description='Ask the ai a question. Keep in mind that it has very limited knowledge of current events.')
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def ask(ctx: SlashContext, *, question):
+async def ask(ctx, *, question: str):
     if len(question)>400:
         await(ctx.reply(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 400 characters.'))
         return
@@ -294,10 +296,10 @@ async def ask(ctx: SlashContext, *, question):
     stop=["question:"]
     )
     response=response.choices[0].text.replace('\n','')
-    await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+    await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 @bot.command()
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def ask(ctx, *, question):
+async def ask(ctx, *, question: str):
 
     response = openai.Completion.create(
     engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
@@ -310,16 +312,16 @@ async def ask(ctx, *, question):
     stop=["question:"]
     )
     response=response.choices[0].text.replace('\n','')
-    await ctx.reply(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+    await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 @ask.error
 async def askError(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
-@slash.slash(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
+@ui.slash.command(name='paragraph_completion', description='Suggests a sentence to continue a given paragraph')
 @commands.cooldown(1, 60, commands.BucketType.user)
-async def paragraph_completion(ctx: SlashContext, *, paragraph):
+async def paragraph_completion(ctx, *, paragraph: str):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
@@ -335,10 +337,10 @@ async def paragraph_completion(ctx: SlashContext, *, paragraph):
     stop=["Input:", '4.']
     )
     print(response)
-    await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+    await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 @bot.command()
 @commands.cooldown(1, 60, commands.BucketType.user)
-async def paragraph_completion(ctx, *, paragraph):
+async def paragraph_completion(ctx, *, paragraph: str):
     with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
@@ -354,16 +356,16 @@ async def paragraph_completion(ctx, *, paragraph):
     stop=["Input:", '4.']
     )
     print(response)
-    await ctx.reply(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+    await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 @paragraph_completion.error
 async def paragraph_completionError(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0xff0000)
         await ctx.send(embed=em)
 
-@slash.slash(name='summarize', description='Summarizes a given text')
+@ui.slash.command(name='summarize', description='Summarizes a given text')
 @commands.cooldown(1, 60, commands.BucketType.user)
-async def summarize(ctx: SlashContext, *, text):
+async def summarize(ctx, *, text: str):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
@@ -383,7 +385,7 @@ async def summarize(ctx: SlashContext, *, text):
     await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
 @bot.command()
 @commands.cooldown(1, 60, commands.BucketType.user)
-async def summarize(ctx: SlashContext, *, text):
+async def summarize(ctx, *, text: str):
     with open('prompts/summarizePrompt.txt', 'r') as f:
         examples = f.read()
         f.close()
