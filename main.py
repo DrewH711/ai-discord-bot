@@ -1,9 +1,8 @@
 import openai
 from openai import error as aierror
+
 import discord
-from discord.ext import commands
 import os
-from os import getenv
 from dotenv import load_dotenv
 from discord_ui import Components, UI, create_choice
 import urllib
@@ -411,5 +410,3 @@ async def summarizeError(ctx, error):
 
 WebServer.start()
 bot.run(os.getenv('DISCORD_TOKEN'))
-
-
