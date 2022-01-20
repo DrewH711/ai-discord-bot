@@ -97,7 +97,8 @@ class regularCommands(commands.Cog):
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
-        stop=["question:"]
+        stop=["question:"],
+        user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
         await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
@@ -117,7 +118,8 @@ class regularCommands(commands.Cog):
         top_p=1,
         frequency_penalty=0.7,
         presence_penalty=2,
-        stop=["Input:", '4.']
+        stop=["Input:", '4.'],
+        user=f"{ctx.author.id}"
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
@@ -138,7 +140,8 @@ class regularCommands(commands.Cog):
         top_p=1,
         frequency_penalty=0.2,
         presence_penalty=0,
-        stop=["Rephrase this passage in a way that a young child could understand:"]
+        stop=["Rephrase this passage in a way that a young child could understand:"],
+        user=f"{ctx.author.id}"
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')

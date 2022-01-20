@@ -5,7 +5,7 @@ from discord_ui.cogs import slash_command, subslash_command, context_cog, listen
 import openai
 from dotenv import load_dotenv
 import os
-load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
+load_dotenv("keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
 
 class regularSlash(Cog):
@@ -79,8 +79,8 @@ class regularSlash(Cog):
     #request command
     @slash_command(name="request", description="Requests a response from the API", options=[
         SlashOption(str, name="engine", description="Engine to request", choices=[
-            create_choice("Davinci","davinci"), create_choice("Curie","curie"), create_choice("Babbage","babbage"), create_choice("Ada","ada"), create_choice("Curie Instruct","curie-instruct-beta-v2"), create_choice("Babbage Instruct","babbage-instruct-beta"), create_choice("Davinci Codex","davinci-codex"), create_choice("Cushman Codex","cushman-codex")
-            ])
+            create_choice("Davinci","davinci"), create_choice("Curie","curie"), create_choice("Babbage","babbage"), create_choice("Ada","ada"), create_choice("Curie Instruct","curie-instruct-beta-v2"), create_choice("Babbage Instruct","babbage-instruct-beta"), create_choice("Davinci Codex","davincicodex"), create_choice("Cushman Codex","cushman-codex")
+            ], required=True)
         ])
     async def request(self, ctx, engine:str="davinci"):
         try:
@@ -89,8 +89,10 @@ class regularSlash(Cog):
                 await ctx.send(f"{x.id} is available")
             else:
                 await ctx.send(f"{x.id} is not available")
-        except openai.APIError:
+        except openai.InvalidRequestError:
             await ctx.send(f"{engine} is not a valid engine")
+        except openai.APIError:
+            await ctx.send("Oops! Something went wrong. Please try again")
 
     #ask command
     @slash_command(name="ask", description="Ask the bot a question")
@@ -106,7 +108,8 @@ class regularSlash(Cog):
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
-        stop=["question:"]
+        stop=["question:"],
+        user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
         await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
@@ -126,7 +129,8 @@ class regularSlash(Cog):
         top_p=1,
         frequency_penalty=0.7,
         presence_penalty=2,
-        stop=["Input:", '4.']
+        stop=["Input:", '4.'],
+        user=f"{ctx.author.id}"
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
@@ -134,7 +138,7 @@ class regularSlash(Cog):
     #summarize command
     @slash_command(name="summarize", description="Summarizes a text in a way that anyone can understand")
     async def summarize(self, ctx, *, text: str):
-        with open('prompts/summarizePrompt.txt', 'r') as f:
+        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
@@ -147,7 +151,8 @@ class regularSlash(Cog):
         top_p=1,
         frequency_penalty=0.2,
         presence_penalty=0,
-        stop=["Rephrase this passage in a way that a young child could understand:"]
+        stop=["Rephrase this passage in a way that a young child could understand:"],
+        user=f"{ctx.author.id}"
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')        

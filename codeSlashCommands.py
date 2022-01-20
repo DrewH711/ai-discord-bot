@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 
 from pandas import options
-load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
+load_dotenv("keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
 
 class codeSlashCommands(Cog):
@@ -16,13 +16,15 @@ class codeSlashCommands(Cog):
         print("Code slash commands loaded")
     
     #writecode command
-    @slash_command(name="writecode", description="Writes a code snippet using a prompt", options=[SlashOption(str, name="language", description="The language of the code snippet", choices=[
-        create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")
-        ], required=True), SlashOption(str, name="prompt", description="What you want the code to do", required=True)
+    @slash_command(name="writecode", description="Writes a code snippet using a prompt", options=[SlashOption(
+        str, name="language", description="The language of the code snippet", choices=[
+        create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","csharp"), create_choice("SQL","sql"), create_choice("Ruby","ruby"), create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")
+        ], required=True
+        ), SlashOption(
+            str, name="prompt", description="What you want the code to do", required=True
+            )
         ])
-    async def writecode(ctx, language, prompt):
-        print(f"language: {language}")
-        print(f"prompt: {prompt}")
+    async def writecode(self, ctx, language: str, prompt: str):
         try:
             response=openai.Completion.create(
             engine="cushman-codex",
@@ -32,15 +34,16 @@ class codeSlashCommands(Cog):
             top_p=1,
             frequency_penalty=1,
             presence_penalty=0,
-            stop=["\n\n\n", "# ","// why","'''"]
+            stop=["\n\n\n", "# ","// why","'''"],
+            user=f"{ctx.author.id}"
             )
             response=response.choices[0].text
             print(response)
             response=response.replace('       ',' ').replace('!!!','')
-            if language=="c#":
-                language="csharp"
-            if(language=="python"):
+            if(language=="python" or language=="ruby" or language=="bash"):
                 commentchar='#' 
+            elif(language=="sql"):
+                commentchar='--'
             else:
                 commentchar='//'
             
@@ -51,7 +54,7 @@ class codeSlashCommands(Cog):
     #explaincode command
     @slash_command(name="explaincode", description="Explains a code snippet in regular words", options=[SlashOption(str, name="language", description="The language of the code snippet", choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")], required=True), SlashOption(str, name="code", description="The code you want explained", required=True)
     ])
-    async def explaincode(ctx, language: str, *, code: str):
+    async def explaincode(self, ctx, language: str, code: str):
 
         code=code.replace('```','')
         code=code.replace('`','')
@@ -63,7 +66,8 @@ class codeSlashCommands(Cog):
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
-        stop=["\n\n\n"]
+        stop=["\n\n\n"],
+        user=f"{ctx.author.id}"
         )
         print(response)
         if(language!="python"):
@@ -72,7 +76,7 @@ class codeSlashCommands(Cog):
 
     #translatecode command
     @slash_command(name="translatecode", description="Translates a code snippet to another language", options=[SlashOption(str, name="language1", description="The starting language of your code", choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")], required=True), SlashOption(str, name="language2", description="The language you want your code translated to",choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")],required=True), SlashOption(str, name="code", description="The code you want translated", required=True)])
-    async def translatecode(ctx, language1: str, language2: str, *, code: str):
+    async def translatecode(self, ctx, language1: str, language2: str, code: str):
         code=code.replace('```','')
         code=code.replace('`','')    
         response = openai.Completion.create(
@@ -83,7 +87,8 @@ class codeSlashCommands(Cog):
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
-        stop=['"""','\n\n\n']
+        stop=['"""','\n\n\n'],
+        user=f"{ctx.author.id}"
         )
         print(response)
         response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
