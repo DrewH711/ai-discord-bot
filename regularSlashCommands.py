@@ -1,11 +1,13 @@
 import discord
 from discord.ext.commands import Bot, Cog
-from discord_ui import Slash, SlashPermission, SlashOption, create_choice
-from discord_ui.cogs import slash_command, subslash_command, context_cog, listening_component
+from discord_ui import UI,Slash, SlashPermission, SlashOption, create_choice, Components, Button
+from discord_ui.cogs import slash_command
 import openai
+import messageClassification
+
 from dotenv import load_dotenv
 import os
-load_dotenv("keys.env")
+load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
 
 class regularSlash(Cog):
@@ -13,6 +15,10 @@ class regularSlash(Cog):
         self.bot=bot
         print("Regular slash commands loaded")
 
+    #ping command
+    @slash_command(name="ping", description="Pong")
+    async def ping(self, ctx):
+        await ctx.send("Pong! Responded in {}ms".format(int(self.bot.latency*1000)))
     #help command
     @slash_command(name="help", description="Shows a list of commands")
     async def help(self, ctx):
@@ -97,8 +103,12 @@ class regularSlash(Cog):
     #ask command
     @slash_command(name="ask", description="Ask the bot a question")
     async def ask(self, ctx, *, question: str):
-        if len(question)>400:
-            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 400 characters.')
+        contentScore = messageClassification.checkMessageContent(question)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(question)>300:
+            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
         engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
@@ -112,11 +122,40 @@ class regularSlash(Cog):
         user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
-        await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
+
+            ''''
+            import listeners
+            await ctx.send("Our content filter has detected possibly offensive content in your response. View anyway?", components=[
+                Button("Yes", custom_id="askYes",color="green"),
+                Button("No", custom_id="askNo",color="red")
+            ], listener=listeners.buttonListener(ctx))
+            if listeners.buttonListener.askYes:
+                await ctx.send(f"{ctx.author.mention} {response}")
+            
+            btn = await msg.wait_for("button", client=self.bot, timeout=30)
+            if btn.color=="blue":
+                await ctx.send(response)
+            elif btn.color=="blue":
+                await ctx.send("Okay, I won't send it")
+            else:
+                await ctx.send("Response timed out")
+            '''
+        else:
+            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 
     #paragraph completion command
     @slash_command(name="paragraph_completion", description="Offers sentence suggestions to continue a paragraph")
     async def paragraph_completion(self, ctx, *, paragraph: str):
+        contentScore = messageClassification.checkMessageContent(paragraph)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your paragraph may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(paragraph)>600:
+            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
+            return
+
         with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
@@ -134,10 +173,19 @@ class regularSlash(Cog):
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")        
 
     #summarize command
     @slash_command(name="summarize", description="Summarizes a text in a way that anyone can understand")
     async def summarize(self, ctx, *, text: str):
+        contentScore = messageClassification.checkMessageContent(text)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(text)>800:
+            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 800 characters.')
+            return        
         with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
@@ -156,3 +204,5 @@ class regularSlash(Cog):
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')        
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")

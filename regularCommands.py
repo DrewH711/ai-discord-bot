@@ -1,12 +1,17 @@
 from discord.ext import commands
 import discord
 import openai
-
+import messageClassification
 class regularCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot=bot
         print("Regular commands loaded")
     
+    #ping command
+    @commands.command(name="ping", description="Pong")
+    async def ping(self, ctx):
+        await ctx.send("Pong! Responded in {}ms".format(int(self.bot.latency*1000)))
+
     #help command
     @commands.command(name="help")
     async def help(self, ctx):
@@ -86,8 +91,12 @@ class regularCommands(commands.Cog):
     #ask command
     @commands.command(name="ask")
     async def ask(self, ctx, *, question: str):
-        if len(question)>400:
-            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 400 characters.')
+        contentScore = messageClassification.checkMessageContent(question)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(question)>300:
+            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
         engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
@@ -101,11 +110,22 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
-        await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
+            return  
+        else:
+            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
 
     #paragraph completion command
     @commands.command(name="paragraph_completion")
     async def paragraph_completion(self, ctx, *, paragraph: str):
+        contentScore = messageClassification.checkMessageContent(paragraph)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(paragraph)>600:
+            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
+            return
         with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
@@ -122,11 +142,22 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
+            return  
+        else:
+            await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
 
     #summarize command
     @commands.command(name="summarize")
     async def summarize(self, ctx, *, text: str):
+        contentScore = messageClassification.checkMessageContent(text)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(text)>800:
+            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 800 characters.')
+            return
         with open('prompts/summarizePrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
@@ -144,4 +175,7 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
+        if messageClassification.checkMessageContent(response)=="2":
+            await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")      
+        else:
+            await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
