@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
+
 def checkMessageContent(content: str):
 
     #this is all copied directly from https://beta.openai.com/docs/engines/content-filter
