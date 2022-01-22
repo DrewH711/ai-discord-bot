@@ -1,6 +1,6 @@
 from discord.ext import commands
 import openai
-
+import messageClassification
 class codeCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot=bot
@@ -9,6 +9,13 @@ class codeCommands(commands.Cog):
     #writecode command
     @commands.command(name="writecode")
     async def writecode(self, ctx, language: str,*, prompt: str):
+        contentScore = messageClassification.checkMessageContent(prompt)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(prompt)>400:
+            await ctx.send(f'{ctx.author.mention} Sorry, that prompt is too long. Please keep your prompts under 400 characters.')
+            return
         import discord
         language=language.lower()
         try:
@@ -40,6 +47,13 @@ class codeCommands(commands.Cog):
     #explaincode command
     @commands.command(name="explaincode")
     async def explaincode(self, ctx, language: str, *, code: str):
+        contentScore = messageClassification.checkMessageContent(code)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your prompts under 700 characters.')
+            return
         code=code.replace('```','')
         code=code.replace('`','')
         response=openai.Completion.create(
@@ -61,6 +75,13 @@ class codeCommands(commands.Cog):
     #translatecode command
     @commands.command(name="translatecode")
     async def translatecode(self, ctx, language1: str, language2: str, *, code: str):
+        contentScore = messageClassification.checkMessageContent(code)
+        if contentScore=="2":
+            await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
+            return
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
+            return
         code=code.replace('```','')
         code=code.replace('`','')    
         response = openai.Completion.create(

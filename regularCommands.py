@@ -6,7 +6,7 @@ class regularCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot=bot
         print("Regular commands loaded")
-    
+
     #ping command
     @commands.command(name="ping", description="Pong")
     async def ping(self, ctx):

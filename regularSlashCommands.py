@@ -156,7 +156,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
             return
 
-        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
+        with open('C:/Users/drewh/Documents/aibot/main/prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
@@ -186,7 +186,7 @@ class regularSlash(Cog):
         if len(text)>800:
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 800 characters.')
             return        
-        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
+        with open('C:/Users/drewh/Documents/aibot/main/prompts/summarizePrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
