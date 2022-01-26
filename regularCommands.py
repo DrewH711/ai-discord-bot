@@ -10,7 +10,7 @@ class regularCommands(commands.Cog):
     #ping command
     @commands.command(name="ping", description="Pong")
     async def ping(self, ctx):
-        await ctx.send("Pong! Responded in {}ms".format(int(self.bot.latency*1000)))
+        await ctx.send(f"Pong! Responded in {int(self.bot.latency)}ms")
 
     #help command
     @commands.command(name="help")
@@ -34,17 +34,17 @@ class regularCommands(commands.Cog):
         import urllib
         from discord import Embed
         try:
-            x = openai.Engine.retrieve("cushman-codex")
+            x = openai.Engine.retrieve("code-cushman-001")
             codex_status = x.ready
         except:
             codex_status = False
         try:
-            x = openai.Engine.retrieve("babbage-instruct-beta")
+            x = openai.Engine.retrieve("text-babbage-001")
             babbage_status = x.ready
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("curie")
+            x = openai.Engine.retrieve("text-curie-001")
             curie_status = x.ready
         except:
             curie_status = False
@@ -99,7 +99,7 @@ class regularCommands(commands.Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
-        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="babbage-text-001", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
         max_tokens=80,
         temperature=0,
@@ -131,7 +131,7 @@ class regularCommands(commands.Cog):
             f.close()
 
         response = openai.Completion.create(
-        engine="curie",
+        engine="text-curie-001",
         prompt=f"{examples} {paragraph}\n output:",
         max_tokens=100,
         temperature=0.7,
@@ -164,7 +164,7 @@ class regularCommands(commands.Cog):
 
 
         response = openai.Completion.create(
-        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="text-curie-001", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"{examples} {text}\n rephrasing:",
         temperature=0.5,
         max_tokens=100,

@@ -41,17 +41,17 @@ class regularSlash(Cog):
         import urllib
         from discord import Embed
         try:
-            x = openai.Engine.retrieve("cushman-codex")
+            x = openai.Engine.retrieve("code-cushman-001")
             codex_status = x.ready
         except:
             codex_status = False
         try:
-            x = openai.Engine.retrieve("babbage-instruct-beta")
+            x = openai.Engine.retrieve("text-babbage-001")
             babbage_status = x.ready
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("curie")
+            x = openai.Engine.retrieve("text-curie-001")
             curie_status = x.ready
         except:
             curie_status = False
@@ -85,10 +85,10 @@ class regularSlash(Cog):
     #request command
     @slash_command(name="request", description="Requests a response from the API", options=[
         SlashOption(str, name="engine", description="Engine to request", choices=[
-            create_choice("Davinci","davinci"), create_choice("Curie","curie"), create_choice("Babbage","babbage"), create_choice("Ada","ada"), create_choice("Curie Instruct","curie-instruct-beta-v2"), create_choice("Babbage Instruct","babbage-instruct-beta"), create_choice("Davinci Codex","davincicodex"), create_choice("Cushman Codex","cushman-codex")
+            create_choice("Davinci","text-davinci-001"), create_choice("Curie","text-curie-001"), create_choice("Babbage","text-babbage-001"), create_choice("Ada","text-ada-001"), create_choice("Davinci Codex","code-davinci-001"), create_choice("Cushman Codex","code-cushman-001")
             ], required=True)
         ])
-    async def request(self, ctx, engine:str="davinci"):
+    async def request(self, ctx, engine:str="text-davinci-001"):
         try:
             x = openai.Engine.retrieve(f"{engine}")
             if(x.ready):
@@ -111,7 +111,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
-        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="text-babbage-001", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
         max_tokens=80,
         temperature=0,
@@ -161,7 +161,7 @@ class regularSlash(Cog):
             f.close()
 
         response = openai.Completion.create(
-        engine="curie",
+        engine="text-curie-001",
         prompt=f"{examples} {paragraph}\n output:",
         max_tokens=100,
         temperature=0.7,
@@ -192,7 +192,7 @@ class regularSlash(Cog):
 
 
         response = openai.Completion.create(
-        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="text-curie-001", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"{examples} {text}\n rephrasing:",
         temperature=0.5,
         max_tokens=100,

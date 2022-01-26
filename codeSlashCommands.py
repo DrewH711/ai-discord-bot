@@ -35,7 +35,7 @@ class codeSlashCommands(Cog):
             return
         try:
             response=openai.Completion.create(
-            engine="cushman-codex",
+            engine="code-cushman-001",
             prompt=f"write the following {language} code: \n{prompt}:\n",
             max_tokens=400,
             temperature=0,
@@ -73,7 +73,7 @@ class codeSlashCommands(Cog):
         code=code.replace('```','')
         code=code.replace('`','')
         response=openai.Completion.create(
-        engine="cushman-codex",
+        engine="code-cushman-001",
         prompt=f"explain the following {language} code: \n{code}",
         max_tokens=500,
         temperature=0,
@@ -101,7 +101,7 @@ class codeSlashCommands(Cog):
         code=code.replace('```','')
         code=code.replace('`','')    
         response = openai.Completion.create(
-        engine="cushman-codex",
+        engine="code-cushman-001",
         prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
         temperature=0,
         max_tokens=500,
