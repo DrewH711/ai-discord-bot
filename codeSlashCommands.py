@@ -28,8 +28,9 @@ class codeSlashCommands(Cog):
             )
         ])
     async def writecode(self, ctx, language: str, prompt: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(prompt)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -62,14 +63,18 @@ class codeSlashCommands(Cog):
             await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
         except discord.errors.NotFound:
             await ctx.send("Sorry, something went wrong. Your request likely timed out")
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(45)
+            self.cooldown.remove(ctx.author.id)
 
     #explaincode command
     @slash_command(name="explaincode", description="Explains a code snippet in regular words", options=[SlashOption(str, name="language", description="The language of the code snippet", choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")], required=True), SlashOption(str, name="code", description="The code you want explained", required=True)
     ])
     async def explaincode(self, ctx, language: str, code: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(code)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -94,13 +99,17 @@ class codeSlashCommands(Cog):
         if(language!="python"):
             response.choices[0].text=response.choices[0].text.replace('#','//')
         await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(45)
+            self.cooldown.remove(ctx.author.id)
 
     #translatecode command
     @slash_command(name="translatecode", description="Translates a code snippet to another language", options=[SlashOption(str, name="language1", description="The starting language of your code", choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")], required=True), SlashOption(str, name="language2", description="The language you want your code translated to",choices=[create_choice("Python", "python"), create_choice("Javascript", "javascript"), create_choice("Java","java"), create_choice("C#","c#"), create_choice("SQL","sql"), create_choice("Ruby","ruby"),create_choice("Rust","rust"), create_choice("Typescript","typescript"), create_choice("Go","golang"), create_choice("Bash","bash")],required=True), SlashOption(str, name="code", description="The code you want translated", required=True)])
     async def translatecode(self, ctx, language1: str, language2: str, code: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(code)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -124,4 +133,7 @@ class codeSlashCommands(Cog):
         print(response)
         response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
         await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(45)
+            self.cooldown.remove(ctx.author.id)

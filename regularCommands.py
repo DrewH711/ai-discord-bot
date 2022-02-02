@@ -93,8 +93,9 @@ class regularCommands(commands.Cog):
     #ask command
     @commands.command(name="ask")
     async def ask(self, ctx, *, question: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(question)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -119,13 +120,17 @@ class regularCommands(commands.Cog):
             return  
         else:
             await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(5);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(5);
+            self.cooldown.remove(ctx.author.id)
 
     #paragraph completion command
     @commands.command(name="paragraph_completion")
     async def paragraph_completion(self, ctx, *, paragraph: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(paragraph)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -154,13 +159,17 @@ class regularCommands(commands.Cog):
             return  
         else:
             await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(45)
+            self.cooldown.remove(ctx.author.id)
 
     #summarize command
     @commands.command(name="summarize")
     async def summarize(self, ctx, *, text: str):
-        if self.cooldown.count(ctx.author.id)==0:A='p'
-        else:await ctx.send('Please wait. You are on a cooldown.');return
+        if self.cooldown.count(ctx.author.id)!=0:
+            await ctx.send('Please wait. You are on a cooldown.')
+            return
         contentScore = messageClassification.checkMessageContent(text)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -189,4 +198,7 @@ class regularCommands(commands.Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")      
         else:
             await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
-        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+        if self.cooldown.count(ctx.author.id)==0:
+            self.cooldown.append(ctx.author.id)
+            await asyncio.sleep(45)
+            self.cooldown.remove(ctx.author.id)
