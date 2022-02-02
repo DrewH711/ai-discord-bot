@@ -1,14 +1,20 @@
 from discord.ext import commands
 import openai
 import messageClassification
+import asyncio
 class codeCommands(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot, cooldown:list):
         self.bot=bot
+        self.cooldown=cooldown
         print("Code commands loaded")
     
     #writecode command
     @commands.command(name="writecode")
     async def writecode(self, ctx, language: str,*, prompt: str):
+
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
+
         contentScore = messageClassification.checkMessageContent(prompt)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -43,10 +49,14 @@ class codeCommands(commands.Cog):
             await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
         except discord.errors.NotFound:
             await ctx.send("Sorry, something went wrong. Your request likely timed out")
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
+
 
     #explaincode command
     @commands.command(name="explaincode")
     async def explaincode(self, ctx, language: str, *, code: str):
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
         contentScore = messageClassification.checkMessageContent(code)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -71,10 +81,13 @@ class codeCommands(commands.Cog):
         if(language!="python"):
             response.choices[0].text=response.choices[0].text.replace('#','//')
         await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
 
     #translatecode command
     @commands.command(name="translatecode")
     async def translatecode(self, ctx, language1: str, language2: str, *, code: str):
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
         contentScore = messageClassification.checkMessageContent(code)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -98,5 +111,6 @@ class codeCommands(commands.Cog):
         print(response)
         response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
         await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
 
 
