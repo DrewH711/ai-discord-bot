@@ -4,6 +4,7 @@ from discord_ui import UI,Slash, SlashPermission, SlashOption, create_choice, Co
 from discord_ui.cogs import slash_command
 import openai
 import messageClassification
+import asyncio
 
 from dotenv import load_dotenv
 import os
@@ -11,8 +12,9 @@ load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
 
 class regularSlash(Cog):
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot, cooldown:list):
         self.bot=bot
+        self.cooldown=cooldown
         print("Regular slash commands loaded")
 
     #ping command
@@ -41,17 +43,17 @@ class regularSlash(Cog):
         import urllib
         from discord import Embed
         try:
-            x = openai.Engine.retrieve("code-cushman-001")
+            x = openai.Engine.retrieve("cushman-codex")
             codex_status = x.ready
         except:
             codex_status = False
         try:
-            x = openai.Engine.retrieve("text-babbage-001")
+            x = openai.Engine.retrieve("babbage-instruct-beta")
             babbage_status = x.ready
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("text-curie-001")
+            x = openai.Engine.retrieve("curie-instruct-beta-v2")
             curie_status = x.ready
         except:
             curie_status = False
@@ -103,6 +105,8 @@ class regularSlash(Cog):
     #ask command
     @slash_command(name="ask", description="Ask the bot a question")
     async def ask(self, ctx, *, question: str):
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
         contentScore = messageClassification.checkMessageContent(question)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -111,7 +115,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
-        engine="text-babbage-001", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
         max_tokens=80,
         temperature=0,
@@ -144,10 +148,13 @@ class regularSlash(Cog):
             '''
         else:
             await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(5);self.cooldown.remove(ctx.author.id)
 
     #paragraph completion command
     @slash_command(name="paragraph_completion", description="Offers sentence suggestions to continue a paragraph")
     async def paragraph_completion(self, ctx, *, paragraph: str):
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
         contentScore = messageClassification.checkMessageContent(paragraph)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your paragraph may contain offensive content. If you know this is not the case, please try again.")
@@ -161,7 +168,7 @@ class regularSlash(Cog):
             f.close()
 
         response = openai.Completion.create(
-        engine="text-curie-001",
+        engine="curie-instruct-beta-v2",
         prompt=f"{examples} {paragraph}\n output:",
         max_tokens=100,
         temperature=0.7,
@@ -175,10 +182,12 @@ class regularSlash(Cog):
         await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
         if messageClassification.checkMessageContent(response)=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")        
-
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
     #summarize command
     @slash_command(name="summarize", description="Summarizes a text in a way that anyone can understand")
     async def summarize(self, ctx, *, text: str):
+        if self.cooldown.count(ctx.author.id)==0:A='p'
+        else:await ctx.send('Please wait. You are on a cooldown.');return
         contentScore = messageClassification.checkMessageContent(text)
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -192,7 +201,7 @@ class regularSlash(Cog):
 
 
         response = openai.Completion.create(
-        engine="text-curie-001", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="curie-instruct-beta-v2", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"{examples} {text}\n rephrasing:",
         temperature=0.5,
         max_tokens=100,
@@ -206,3 +215,4 @@ class regularSlash(Cog):
         await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')        
         if messageClassification.checkMessageContent(response)=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
+        if self.cooldown.count(ctx.author.id)==0:self.cooldown.append(ctx.author.id);await asyncio.sleep(45);self.cooldown.remove(ctx.author.id)
