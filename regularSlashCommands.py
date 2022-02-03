@@ -118,7 +118,7 @@ class regularSlash(Cog):
         response = openai.Completion.create(
         engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
-        max_tokens=80,
+        max_tokens=50,
         temperature=0,
         top_p=1,
         frequency_penalty=1,
@@ -131,10 +131,10 @@ class regularSlash(Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
 
         else:
-            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**\n\n*reminder that I am an AI and cannot actually understand questions, only replicate patterns.')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(5);
+            await asyncio.sleep(30);
             self.cooldown.remove(ctx.author.id)
 
     #paragraph completion command
@@ -172,7 +172,7 @@ class regularSlash(Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")        
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(45)
+            await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)
     #summarize command
     @slash_command(name="summarize", description="Summarizes a text in a way that anyone can understand")
@@ -209,5 +209,5 @@ class regularSlash(Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(45)
+            await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)

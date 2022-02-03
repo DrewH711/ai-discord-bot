@@ -41,12 +41,12 @@ class regularCommands(commands.Cog):
         except:
             codex_status = False
         try:
-            x = openai.Engine.retrieve("text-babbage-001")
+            x = openai.Engine.retrieve("babbage-instruct-beta")
             babbage_status = x.ready
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("text-curie-001")
+            x = openai.Engine.retrieve("curie-instruct-beta-v2")
             curie_status = x.ready
         except:
             curie_status = False
@@ -96,7 +96,7 @@ class regularCommands(commands.Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(question)
+        contentScore = messageClassification.checkMessageContent(question, str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -104,9 +104,9 @@ class regularCommands(commands.Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
             return
         response = openai.Completion.create(
-        engine="babbage-text-001", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
-        max_tokens=80,
+        max_tokens=50,
         temperature=0,
         top_p=1,
         frequency_penalty=1,
@@ -115,23 +115,23 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response, str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
             return  
         else:
-            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**')
+            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**\n\n*reminder that I am an AI and cannot actually understand questions, only replicate patterns.')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(5);
+            await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)
 
     #paragraph completion command
     @commands.command(name="paragraph_completion")
     async def paragraph_completion(self, ctx, *, paragraph: str):
         if self.cooldown.count(ctx.author.id)!=0:
-            await ctx.send('Please wait. You are on a cooldown.')
+            await ctx.send(f'Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(paragraph)
+        contentScore = messageClassification.checkMessageContent(paragraph, str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -143,7 +143,7 @@ class regularCommands(commands.Cog):
             f.close()
 
         response = openai.Completion.create(
-        engine="text-curie-001",
+        engine="curie-instruct-beta-v2",
         prompt=f"{examples} {paragraph}\n output:",
         max_tokens=100,
         temperature=0.7,
@@ -154,23 +154,23 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response, str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
             return  
         else:
             await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(45)
+            await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)
 
     #summarize command
     @commands.command(name="summarize")
     async def summarize(self, ctx, *, text: str):
         if self.cooldown.count(ctx.author.id)!=0:
-            await ctx.send('Please wait. You are on a cooldown.')
+            await ctx.send(f'Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(text)
+        contentScore = messageClassification.checkMessageContent(text, str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -183,7 +183,7 @@ class regularCommands(commands.Cog):
 
 
         response = openai.Completion.create(
-        engine="text-curie-001", #curie-instruct-beta-v2 is better if it's not too expensive
+        engine="curie-instruct-beta-v2", #curie-instruct-beta-v2 is better if it's not too expensive
         prompt=f"{examples} {text}\n rephrasing:",
         temperature=0.5,
         max_tokens=100,
@@ -194,11 +194,11 @@ class regularCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response, str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")      
         else:
             await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(45)
+            await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)

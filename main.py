@@ -4,7 +4,7 @@ from discord_ui import UI
 from dotenv import load_dotenv
 import os
 cooldown = []
-load_dotenv("keys.env")
+load_dotenv("C:/Users/drewh/Documents/local programs/aibot/keys.env")
 intents=Intents.default()
 intents.members=True
 

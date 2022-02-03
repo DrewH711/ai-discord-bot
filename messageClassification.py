@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv("C:/Users/drewh/Documents/aibot/keys.env")
 openai.api_key=os.getenv("OPENAI_KEY")
 
-def checkMessageContent(content: str):
+def checkMessageContent(content: str, user: int):
 
     #this is all copied directly from https://beta.openai.com/docs/engines/content-filter
 
@@ -16,7 +16,8 @@ def checkMessageContent(content: str):
       top_p=1,
       frequency_penalty=0,
       presence_penalty=0,
-      logprobs=10
+      logprobs=10,
+      user=user
     )
 
     output_label = response["choices"][0]["text"]
