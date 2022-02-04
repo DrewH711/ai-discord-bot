@@ -16,7 +16,7 @@ class codeCommands(commands.Cog):
             await ctx.send('Please wait. You are on a cooldown.')
             return
 
-        contentScore = messageClassification.checkMessageContent(prompt)
+        contentScore = messageClassification.checkMessageContent(prompt,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -62,7 +62,7 @@ class codeCommands(commands.Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(code)
+        contentScore = messageClassification.checkMessageContent(code,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -97,7 +97,7 @@ class codeCommands(commands.Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(code)
+        contentScore = messageClassification.checkMessageContent(code,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return

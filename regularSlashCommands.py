@@ -108,7 +108,7 @@ class regularSlash(Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(question)
+        contentScore = messageClassification.checkMessageContent(question,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -127,7 +127,7 @@ class regularSlash(Cog):
         user=f"{ctx.author.id}"
         )
         response=response.choices[0].text.replace('\n','')
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response,str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
 
         else:
@@ -143,7 +143,7 @@ class regularSlash(Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(paragraph)
+        contentScore = messageClassification.checkMessageContent(paragraph,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your paragraph may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -168,7 +168,7 @@ class regularSlash(Cog):
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand code')
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response,str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")        
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
@@ -180,7 +180,7 @@ class regularSlash(Cog):
         if self.cooldown.count(ctx.author.id)!=0:
             await ctx.send('Please wait. You are on a cooldown.')
             return
-        contentScore = messageClassification.checkMessageContent(text)
+        contentScore = messageClassification.checkMessageContent(text,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
@@ -205,7 +205,7 @@ class regularSlash(Cog):
         )
         print(response)
         await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand code')        
-        if messageClassification.checkMessageContent(response)=="2":
+        if messageClassification.checkMessageContent(response,str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
