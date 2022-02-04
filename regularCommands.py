@@ -100,8 +100,8 @@ class regularCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(question)>300:
-            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 300 characters.')
+        if len(question)>200:
+            await ctx.send(f'{ctx.author.mention} Sorry, that question is too long. Please keep your questions under 200 characters.')
             return
         response = openai.Completion.create(
         engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
@@ -119,7 +119,7 @@ class regularCommands(commands.Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
             return  
         else:
-            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**\n\n*reminder that I am an AI and cannot actually understand questions, only replicate patterns.')
+            await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**\n\n*reminder that this is an AI that cannot actually understand questions, only replicate patterns.')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(30)
@@ -158,7 +158,7 @@ class regularCommands(commands.Cog):
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
             return  
         else:
-            await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**')
+            await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand paragraphs')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(30)
@@ -174,8 +174,8 @@ class regularCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(text)>800:
-            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 800 characters.')
+        if len(text)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 700 characters.')
             return
         with open('prompts/summarizePrompt.txt', 'r') as f:
             examples = f.read()
@@ -197,7 +197,7 @@ class regularCommands(commands.Cog):
         if messageClassification.checkMessageContent(response, str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")      
         else:
-            await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**')
+            await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**\n\nreminder that this is an AI that cannot truly understand paragraphs')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(30)

@@ -20,8 +20,8 @@ class codeCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(prompt)>400:
-            await ctx.send(f'{ctx.author.mention} Sorry, that prompt is too long. Please keep your prompts under 400 characters.')
+        if len(prompt)>200:
+            await ctx.send(f'{ctx.author.mention} Sorry, that prompt is too long. Please keep your prompts under 200 characters.')
             return
         import discord
         language=language.lower()
@@ -29,7 +29,7 @@ class codeCommands(commands.Cog):
             response=openai.Completion.create(
             engine="code-cushman-001",
             prompt=f"write the following {language} code: \n{prompt}:\n",
-            max_tokens=400,
+            max_tokens=300,
             temperature=0,
             top_p=1,
             frequency_penalty=1,
@@ -47,7 +47,7 @@ class codeCommands(commands.Cog):
             else:
                 commentchar='//'
             
-            await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```")
+            await ctx.send(f"{ctx.author.mention}\n ```{language}\n{commentchar}{prompt} in {language}\n{response}```\n\n*reminder that this is an AI that cannot truly understand code")
         except discord.errors.NotFound:
             await ctx.send("Sorry, something went wrong. Your request likely timed out")
         if self.cooldown.count(ctx.author.id)==0:
@@ -66,15 +66,15 @@ class codeCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>700:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your prompts under 700 characters.')
+        if len(code)>500:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your prompts under 500 characters.')
             return
         code=code.replace('```','')
         code=code.replace('`','')
         response=openai.Completion.create(
         engine="code-cushman-001",
         prompt=f"explain the following {language} code: \n{code}",
-        max_tokens=500,
+        max_tokens=300,
         temperature=0,
         top_p=1,
         frequency_penalty=1,
@@ -85,7 +85,7 @@ class codeCommands(commands.Cog):
         print(response)
         if(language!="python"):
             response.choices[0].text=response.choices[0].text.replace('#','//')
-        await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```')
+        await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(45)
@@ -101,8 +101,8 @@ class codeCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>700:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
+        if len(code)>500:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 500 characters.')
             return
         code=code.replace('```','')
         code=code.replace('`','')    
@@ -110,7 +110,7 @@ class codeCommands(commands.Cog):
         engine="code-cushman-001",
         prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
         temperature=0,
-        max_tokens=500,
+        max_tokens=300,
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
@@ -119,7 +119,7 @@ class codeCommands(commands.Cog):
         )
         print(response)
         response.choices[0].text=response.choices[0].text.replace('\n\n\n','\n')
-        await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```')
+        await ctx.send(f'{ctx.author.mention}```{language2}\n{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(45)
