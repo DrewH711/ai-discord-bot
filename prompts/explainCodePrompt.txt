@@ -1,0 +1,29 @@
+Explain code blocks step-by-step in a way that is concise and able to be understood by anyone.
+
+python code: def check(num):
+    points=[]
+    originalNum=num
+    counter=0
+    while num!=1:
+        if num%2==0:
+            num=int(num/2)
+            points.append(num)
+            counter=counter+1
+        else:
+            num=int(num*3+1)
+            points.append(num)
+            counter=counter+1
+    plt.plot(points)
+    print(points)
+    plt.show()
+    result = (f"{originalNum} is 1 in {counter} steps")
+    return result
+
+explanation:
+1. A function named "check" is defined with the parameter "num"
+2. Variables "points", "originalNum", and "counter" are initiated
+3. While the variable "num" is not equal to 1, the program checks if it is even or odd
+4. If the number is even, it is divided by 2. 1 is added to the counter value
+5. If the number is odd, it is multiplied by 3 and 1 is added. 1 is added to the counter value 
+6. When "num" is equal to 1, plot the points in the list "points", show the graph, and set "result" equal to a string including the original number and the number of steps it took to reach 1.
+7. return the string "result"

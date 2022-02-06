@@ -79,16 +79,19 @@ class codeSlashCommands(Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>300:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 500 characters.')
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
             return
+        with open('prompts/explainCodePrompt.txt','r') as f:
+            prompt=f.read()
+            f.close()
         code=code.replace('```','')
         code=code.replace('`','')
         response=openai.Completion.create(
         engine="code-cushman-001",
-        prompt=f"explain the following {language} code: \n{code}",
-        max_tokens=500,
-        temperature=0,
+        prompt=f"{prompt}:\n\n{language} code: {code.replace('```','')}:\n\nexplanaiton:\n",
+        max_tokens=300,
+        temperature=0.9,
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
@@ -96,9 +99,11 @@ class codeSlashCommands(Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
+        if language.lower()=="c#":
+            language="csharp"
         if(language!="python"):
             response.choices[0].text=response.choices[0].text.replace('#','//')
-        await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code')
+        await ctx.send(f"{ctx.author.mention}```{language}\n{code}```\n```{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code")
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(45)
@@ -114,15 +119,15 @@ class codeSlashCommands(Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>300:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 500 characters.')
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
             return
         code=code.replace('```','')
         code=code.replace('`','')    
         response = openai.Completion.create(
         engine="code-cushman-001",
         prompt=f"translate this {language1} code into equivalent {language2}:\n\n{code}\n\n{language2} code goes here:\n",
-        temperature=0,
+        temperature=0.6,
         max_tokens=500,
         top_p=1,
         frequency_penalty=1,

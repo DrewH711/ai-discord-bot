@@ -151,7 +151,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
             return
 
-        with open('C:/Users/drewh/Documents/aibot/main/prompts/paragraphSuggestionPrompt.txt', 'r') as f:
+        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
@@ -167,7 +167,7 @@ class regularSlash(Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand code')
+        await ctx.send(f'{ctx.author.mention}\n Your paragraph:\n{paragraph}\n\n**{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand paragraphs')
         if messageClassification.checkMessageContent(response,str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")        
         if self.cooldown.count(ctx.author.id)==0:
@@ -187,7 +187,7 @@ class regularSlash(Cog):
         if len(text)>700:
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 700 characters.')
             return        
-        with open('C:/Users/drewh/Documents/aibot/main/prompts/summarizePrompt.txt', 'r') as f:
+        with open('prompts/summarizePrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
@@ -204,7 +204,7 @@ class regularSlash(Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
-        await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand code')        
+        await ctx.send(f'{ctx.author.mention}\nYour text:\n{text}\nSummary: **{response.choices[0].text}**\n\n*reminder that this is an AI that cannot truly understand paragraphs')        
         if messageClassification.checkMessageContent(response,str(ctx.author.id))=="2":
             await ctx.send(f"{ctx.author.mention} Our content filter has detected that your response may contain offensive content, and will not be shown. Unfortunately the AI is not perfect, and this is beyond our control. Please try again.")
         if self.cooldown.count(ctx.author.id)==0:

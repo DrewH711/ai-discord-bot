@@ -66,8 +66,8 @@ class codeCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>500:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your prompts under 500 characters.')
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your prompts under 700 characters.')
             return
         code=code.replace('```','')
         code=code.replace('`','')
@@ -75,7 +75,7 @@ class codeCommands(commands.Cog):
         engine="code-cushman-001",
         prompt=f"explain the following {language} code: \n{code}",
         max_tokens=300,
-        temperature=0,
+        temperature=0.9,
         top_p=1,
         frequency_penalty=1,
         presence_penalty=0,
@@ -83,9 +83,11 @@ class codeCommands(commands.Cog):
         user=f"{ctx.author.id}"
         )
         print(response)
+        if language.lower()=="c#":
+            language="csharp"
         if(language!="python"):
             response.choices[0].text=response.choices[0].text.replace('#','//')
-        await ctx.send(f'{ctx.author.mention}```{language}\n{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code')
+        await ctx.send(f"{ctx.author.mention}```{language}\n{code}```\n```{response.choices[0].text}```\n\n*reminder that this is an AI that cannot truly understand code")
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(45)
@@ -101,8 +103,8 @@ class codeCommands(commands.Cog):
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
             return
-        if len(code)>500:
-            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 500 characters.')
+        if len(code)>700:
+            await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
             return
         code=code.replace('```','')
         code=code.replace('`','')    
