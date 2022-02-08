@@ -82,7 +82,7 @@ class codeSlashCommands(Cog):
         if len(code)>700:
             await ctx.send(f'{ctx.author.mention} Sorry, that code is too long. Please keep your code under 700 characters.')
             return
-        with open('prompts/explainCodePrompt.txt','r') as f:
+        with open('C:/Users/drewh/Documents/local programs/aibot/main/prompts/explainCodePrompt.txt','r') as f:
             prompt=f.read()
             f.close()
         code=code.replace('```','')

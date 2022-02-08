@@ -43,7 +43,7 @@ class regularSlash(Cog):
         import urllib
         from discord import Embed
         try:
-            x = openai.Engine.retrieve("cushman-codex")
+            x = openai.Engine.retrieve("davinci")
             codex_status = x.ready
         except:
             codex_status = False
@@ -53,7 +53,7 @@ class regularSlash(Cog):
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("curie-instruct-beta-v2")
+            x = openai.Engine.retrieve("curie-instruct-beta")
             curie_status = x.ready
         except:
             curie_status = False
@@ -81,7 +81,7 @@ class regularSlash(Cog):
         embedVar.add_field(name="Discord bot", value=":white_check_mark:", inline=False)
         embedVar.add_field(name="Website", value=site_status, inline=False)
         embedVar.add_field(name="Coding AI", value=codex_status, inline=False)
-        embedVar.add_field(name="Chatting and Paragraph Analysis AI", value=babbage_status, inline=False)
+        embedVar.add_field(name="Chatting and Paragraph Analysis AI", value=curie_status, inline=False)
         await ctx.send(embed=embedVar)
 
     #request command
@@ -151,7 +151,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
             return
 
-        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
+        with open('C:/Users/drewh/Documents/local programs/aibot/main/prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
@@ -187,7 +187,7 @@ class regularSlash(Cog):
         if len(text)>700:
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 700 characters.')
             return        
-        with open('prompts/summarizePrompt.txt', 'r') as f:
+        with open('C:/Users/drewh/Documents/local programs/aibot/main/prompts/summarizePrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 

@@ -36,7 +36,7 @@ class regularCommands(commands.Cog):
         import urllib
         from discord import Embed
         try:
-            x = openai.Engine.retrieve("code-cushman-001")
+            x = openai.Engine.retrieve("davinci")
             codex_status = x.ready
         except:
             codex_status = False
@@ -46,7 +46,7 @@ class regularCommands(commands.Cog):
         except:
             babbage_status = False
         try:
-            x = openai.Engine.retrieve("curie-instruct-beta-v2")
+            x = openai.Engine.retrieve("curie-instruct-beta")
             curie_status = x.ready
         except:
             curie_status = False
@@ -74,7 +74,7 @@ class regularCommands(commands.Cog):
         embedVar.add_field(name="Discord bot", value=":white_check_mark:", inline=False)
         embedVar.add_field(name="Website", value=site_status, inline=False)
         embedVar.add_field(name="Coding AI", value=codex_status, inline=False)
-        embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=babbage_status, inline=False)
+        embedVar.add_field(name="Chatting and Pragraph Analysis AI", value=curie_status, inline=False)
         await ctx.send(embed=embedVar)
 
     #request command
@@ -138,7 +138,7 @@ class regularCommands(commands.Cog):
         if len(paragraph)>600:
             await ctx.send(f'{ctx.author.mention} Sorry, that paragraph is too long. Please keep your paragraphs under 600 characters.')
             return
-        with open('prompts/paragraphSuggestionPrompt.txt', 'r') as f:
+        with open('C:/Users/drewh/Documents/local programs/aibot/main/prompts/paragraphSuggestionPrompt.txt', 'r') as f:
             examples = f.read()
             f.close()
 
