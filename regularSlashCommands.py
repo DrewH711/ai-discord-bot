@@ -106,8 +106,9 @@ class regularSlash(Cog):
     @slash_command(name="ask", description="Ask the bot a question")
     async def ask(self, ctx, *, question: str):
         if self.cooldown.count(ctx.author.id)!=0:
-            await ctx.send('Please wait. You are on a cooldown.')
-            return
+            if ctx.author.id != 755214413086064745 or ctx.author.id != 633795092515127315:
+                await ctx.send('Please wait. You are on a cooldown.')
+                return
         contentScore = messageClassification.checkMessageContent(question,str(ctx.author.id))
         if contentScore=="2":
             await ctx.send("Our content filter has detected that your question may contain offensive content. If you know this is not the case, please try again.")
@@ -117,7 +118,7 @@ class regularSlash(Cog):
             return
         response = openai.Completion.create(
         engine="babbage-instruct-beta", #curie-instruct-beta-v2 is better if it's not too expensive
-        prompt=f"Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
+        prompt=f"You are a kind, helpful chatbot named Tom. Answer the question as accurately as possible while giving as much information as possible, but make it relatively easy to understand.\n question: {question} \n answer: ",
         max_tokens=50,
         temperature=0,
         top_p=1,
@@ -134,7 +135,7 @@ class regularSlash(Cog):
             await ctx.send(f'{ctx.author.mention}\n Question: {question}\n Answer: **{response}**\n\n*reminder that this is an AI that cannot actually understand questions, only replicate patterns.')
         if self.cooldown.count(ctx.author.id)==0:
             self.cooldown.append(ctx.author.id)
-            await asyncio.sleep(30);
+            await asyncio.sleep(5);
             self.cooldown.remove(ctx.author.id)
 
     #paragraph completion command
@@ -211,3 +212,8 @@ class regularSlash(Cog):
             self.cooldown.append(ctx.author.id)
             await asyncio.sleep(30)
             self.cooldown.remove(ctx.author.id)
+
+    #source command
+    @slash_command(name="source", description="Gives the source code for the bot")
+    async def source(self, ctx):
+        await ctx.send("https://github.com/DrewH711/ai-discord-bot (will offer embedded code soon)")
