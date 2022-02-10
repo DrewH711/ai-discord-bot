@@ -165,7 +165,7 @@ body:before {
     pointer-events: none;
     transform: scale(1);
     background-attachment: scroll;
-    background-image: linear-gradient(to top, rgba(21, 20, 28, 0.871), rgba(21, 20, 28, 0.871)), url('static/images/bg.svg?v=af5b913c');
+    background-image: linear-gradient(to top, rgba(21, 20, 28, 0.871), rgba(21, 20, 28, 0.871)), url('/static/images/bg.svg?v=af5b913c');
     background-position: 0% 0%, center;
     background-repeat: repeat, no-repeat;
     background-size: auto, cover;
@@ -919,7 +919,7 @@ p.style6 mark {
     background-color: #000000;
     border-style: solid;
     border-color: rgba(255, 255, 255, 0.161);
-    background-image: linear-gradient(90deg, rgba(250, 144, 72, 0.949) 0%, rgba(255, 84, 115, 0.922) 100%), url('static/images/container01.svg?v=af5b913c');
+    background-image: linear-gradient(90deg, rgba(250, 144, 72, 0.949) 0%, rgba(255, 84, 115, 0.922) 100%), url('/static/images/container01.svg?v=af5b913c');
     background-position: 0% 0%, center;
     background-repeat: repeat, no-repeat;
     background-size: cover, cover;
@@ -1295,7 +1295,7 @@ body.is-touch #container01 {
     border-style: solid;
     border-color: rgba(255, 255, 255, 0.239);
     border-radius: 1rem;
-    background-image: linear-gradient(90deg, rgba(250, 144, 72, 0.949) 0%, rgba(255, 84, 115, 0.922) 100%), url('static/images/container02.svg?v=af5b913c');
+    background-image: linear-gradient(90deg, rgba(250, 144, 72, 0.949) 0%, rgba(255, 84, 115, 0.922) 100%), url('/static/images/container02.svg?v=af5b913c');
     background-position: 0% 0%, center;
     background-repeat: repeat, no-repeat;
     background-size: cover, cover;
